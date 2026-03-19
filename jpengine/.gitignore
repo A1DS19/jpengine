@@ -1,6 +1,8 @@
 # Build artifacts
 build/*
 !build/.gitkeep
+build-wasm/*
+!build-wasm/.gitkeep
 bin/*
 !bin/.gitkeep
 lib/*
