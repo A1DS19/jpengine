@@ -1,5 +1,5 @@
-#include "shader.hpp"
-#include "texture.hpp"
+#include "rendering/shader.hpp"
+#include "rendering/texture.hpp"
 
 #include <SDL_pixels.h>
 #include <SDL_surface.h>

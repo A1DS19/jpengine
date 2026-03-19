@@ -1,4 +1,4 @@
-#include "texture.hpp"
+#include "rendering/texture.hpp"
 using namespace jpengine;
 
 Texture::Texture() : Texture(0, 0, 0, "") {}
