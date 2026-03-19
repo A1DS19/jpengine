@@ -1,7 +1,7 @@
 #ifdef __APPLE__
-#  include <OpenGL/gl3.h>
+    #include <OpenGL/gl3.h>
 #else
-#  include <GLES3/gl3.h>
+    #include <GLES3/gl3.h>
 #endif
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
@@ -72,14 +72,14 @@ bool init_sdl() {
     }
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,  // v0 bottom-left
-         0.5f, -0.5f, 0.0f,  // v1 bottom-right
-         0.5f,  0.5f, 0.0f,  // v2 top-right
-        -0.5f,  0.5f, 0.0f,  // v3 top-left
+        -0.5f, -0.5f, 0.0f, // v0 bottom-left
+        0.5f,  -0.5f, 0.0f, // v1 bottom-right
+        0.5f,  0.5f,  0.0f, // v2 top-right
+        -0.5f, 0.5f,  0.0f, // v3 top-left
     };
     unsigned int indices[] = {
-        0, 1, 2,  // triangle 1
-        0, 2, 3,  // triangle 2
+        0, 1, 2, // triangle 1
+        0, 2, 3, // triangle 2
     };
 
     glGenVertexArrays(1, &vao);
