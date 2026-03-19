@@ -92,11 +92,13 @@ set_target_properties(
 if(EMSCRIPTEN)
   # Emscripten bundles SDL2 as a port — WebGL2 = GLES3
   set_target_properties(main PROPERTIES SUFFIX ".html")
-  target_compile_options(main PRIVATE -sUSE_SDL=2 -fwasm-exceptions)
+  target_compile_options(main PRIVATE -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -fwasm-exceptions)
   target_link_options(
     main
     PRIVATE
     -sUSE_SDL=2
+    -sUSE_SDL_IMAGE=2
+    -sSDL2_IMAGE_FORMATS=["png","jpg"]
     -sALLOW_MEMORY_GROWTH=1
     -sUSE_WEBGL2=1
     -sFULL_ES3=1
@@ -107,6 +109,10 @@ else()
   find_package(SDL2 REQUIRED)
   target_include_directories(main PRIVATE ${SDL2_INCLUDE_DIRS})
   target_link_libraries(main PRIVATE ${SDL2_LIBRARIES})
+
+  find_package(SDL2_image REQUIRED)
+  target_include_directories(main PRIVATE ${CMAKE_PREFIX_PATH}/include)
+  target_link_libraries(main PRIVATE SDL2_image::SDL2_image)
 
   # OpenGL / OpenGL ES 3
   if(APPLE)
@@ -161,6 +167,9 @@ if(VENDOR_SOURCES)
   set_target_properties(vendor PROPERTIES COMPILE_FLAGS "-w")
   target_link_libraries(main PRIVATE vendor)
 endif()
+
+# stb — flat header layout, implementation compiled via stb_impl.cpp
+target_include_directories(main SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/vendor/stb)
 
 # Lua — flat C source layout in vendor/lua/
 file(GLOB LUA_SOURCES ${CMAKE_SOURCE_DIR}/vendor/lua/*.c)

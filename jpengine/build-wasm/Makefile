@@ -180,6 +180,30 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/stb_impl.o: src/stb_impl.cpp.o
+.PHONY : src/stb_impl.o
+
+# target to build an object file
+src/stb_impl.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/stb_impl.cpp.o
+.PHONY : src/stb_impl.cpp.o
+
+src/stb_impl.i: src/stb_impl.cpp.i
+.PHONY : src/stb_impl.i
+
+# target to preprocess a source file
+src/stb_impl.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/stb_impl.cpp.i
+.PHONY : src/stb_impl.cpp.i
+
+src/stb_impl.s: src/stb_impl.cpp.s
+.PHONY : src/stb_impl.s
+
+# target to generate assembly for a file
+src/stb_impl.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/stb_impl.cpp.s
+.PHONY : src/stb_impl.cpp.s
+
 vendor/lua/lapi.o: vendor/lua/lapi.c.o
 .PHONY : vendor/lua/lapi.o
 
@@ -962,6 +986,9 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/stb_impl.o"
+	@echo "... src/stb_impl.i"
+	@echo "... src/stb_impl.s"
 	@echo "... vendor/lua/lapi.o"
 	@echo "... vendor/lua/lapi.i"
 	@echo "... vendor/lua/lapi.s"
