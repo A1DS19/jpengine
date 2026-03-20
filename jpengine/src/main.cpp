@@ -1,3 +1,4 @@
+#include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
 #include "rendering/shader.hpp"
 #include "rendering/texture.hpp"
@@ -41,6 +42,7 @@ GLuint ebo{0};
 
 std::shared_ptr<Shader> shader{nullptr};
 std::shared_ptr<Texture> texture{nullptr};
+std::unique_ptr<Camera> camera{nullptr};
 
 bool init_sdl() {
     std::cout << "initializing sdl\n";
@@ -73,11 +75,12 @@ bool init_sdl() {
         return false;
     }
 
+    // A 200x200 quad centered at (400, 300) — screen center for 800x600
     auto vertices = std::array<float, 16>{
-        -0.5f, -0.5f, 0.0f, 1.0f, // v0 bottom-left
-        0.5f,  -0.5f, 1.0f, 1.0f, // v1 bottom-right
-        0.5f,  0.5f,  1.0f, 0.0f, // v2 top-right
-        -0.5f, 0.5f,  0.0f, 0.0f, // v3 top-left
+        0.0f,   0.0f,   0.0f, 0.0f, // v0 top-left
+        200.0f, 0.0f,   1.0f, 0.0f, // v1 top-right
+        200.0f, 200.0f, 1.0f, 1.0f, // v2 bottom-right
+        0.0f,   200.0f, 0.0f, 1.0f, // v3 bottom-left
     };
 
     auto indices = std::array<uint8_t, 6>{
@@ -104,6 +107,10 @@ bool init_sdl() {
         std::cerr << "failed to load texture [character.png]";
         return false;
     }
+
+    camera = std::make_unique<Camera>(800, 600);
+    camera->update();
+    camera->set_scale(2.F);
 
     std::cout << "sdl/opengl initialization success\n";
     return true;
@@ -137,11 +144,17 @@ void game_loop() {
     texture->enable();
 
     glBindVertexArray(vao);
+
+    auto camera_matrix = camera->get_camera_matrix();
+    shader->set_uniform_mat4("u_projection", camera_matrix);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
 
     texture->disable();
     shader->disable();
     SDL_GL_SwapWindow(p_window);
+
+    camera->update();
 }
 
 auto main() -> int {

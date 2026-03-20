@@ -171,6 +171,10 @@ endif()
 # stb — flat header layout, implementation compiled via stb_impl.cpp
 target_include_directories(main SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/vendor/stb)
 
+# glm — header-only, lives in vendor/glm/ so add vendor/ as the include root
+# usage: #include <glm/glm.hpp>
+target_include_directories(main SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/vendor)
+
 # Lua — flat C source layout in vendor/lua/
 file(GLOB LUA_SOURCES ${CMAKE_SOURCE_DIR}/vendor/lua/*.c)
 # Exclude standalone interpreter, amalgamation, and test runner (each has
