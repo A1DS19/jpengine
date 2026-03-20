@@ -1,3 +1,4 @@
+#include "rendering/default-shaders.hpp"
 #include "rendering/shader.hpp"
 #include "rendering/texture.hpp"
 #include "utils/asset-loader.hpp"
@@ -34,28 +35,6 @@ using namespace jpengine;
 SDL_Window* p_window{nullptr};
 SDL_GLContext gl_context{};
 
-const char* vertex_shader_ = R"(#version 300 es
-in vec2 a_pos;
-in vec2 a_uvs;
-out vec2 frag_uvs;
-
-void main(){
-  gl_Position = vec4(a_pos, 0.0f, 1.0f);
-  frag_uvs = a_uvs;
-}
-)";
-
-const char* frag_shader_ = R"(#version 300 es
-precision mediump float;
-in vec2 frag_uvs;
-out vec4 fragColor;
-uniform sampler2D u_texture;
-
-void main(){
-  fragColor = texture(u_texture, frag_uvs);
-}
-)";
-
 GLuint vao{0};
 GLuint vbo{0};
 GLuint ebo{0};
@@ -86,7 +65,8 @@ bool init_sdl() {
     SDL_GL_SetSwapInterval(1);
     glEnable(GL_BLEND);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
-    shader = jpengine::utils::AssetLoader::load_shader_from_memory(vertex_shader_, frag_shader_);
+    shader = jpengine::utils::AssetLoader::load_shader_from_memory(
+        DefaultShaders::basic_shader_vert, DefaultShaders::basic_shader_frag);
 
     if (shader == nullptr) {
         std::cerr << "failed to load shaders\n";
