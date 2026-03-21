@@ -1,3 +1,4 @@
+#include "ecs/registry.hpp"
 #include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
 #include "rendering/shader.hpp"
@@ -35,8 +36,6 @@
     #include <emscripten.h>
 #endif
 
-#include <filesystem>
-
 using namespace jpengine;
 
 SDL_Window* p_window{nullptr};
@@ -50,33 +49,8 @@ std::shared_ptr<Shader> shader{nullptr};
 std::shared_ptr<Texture> texture{nullptr};
 std::unique_ptr<Camera> camera{nullptr};
 
-sol::state lua;
 sol::protected_function script_update;
-std::filesystem::file_time_type last_script_write_time;
-const std::string script_path = "assets/scripts/main.lua";
-
-void reload_script() {
-    try {
-        if (!std::filesystem::exists(script_path)) {
-            return;
-        }
-
-        auto current_time = std::filesystem::last_write_time(script_path);
-        if (current_time > last_script_write_time) {
-            std::cout << "Reloading script: " << script_path << "\n";
-            auto result = lua.do_file(script_path);
-            if (result.valid()) {
-                script_update = result.get<sol::protected_function>(0);
-                last_script_write_time = current_time;
-            } else {
-                sol::error err = result;
-                std::cerr << "Failed to reload script: " << err.what() << "\n";
-            }
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error checking for script updates: " << e.what() << "\n";
-    }
-}
+std::unique_ptr<Registry> registry = nullptr;
 
 bool init_sdl() {
     std::cout << "initializing sdl\n";
@@ -142,13 +116,28 @@ bool init_sdl() {
     camera = std::make_unique<Camera>(800, 600);
     std::cout << "sdl/opengl initialization success\n";
 
+    auto lua = std::make_shared<sol::state>();
     camera->update();
-    lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::os, sol::lib::math);
-    Camera::create_lua_bind(lua, *camera);
-    Vertex::create_lua_bind(lua);
+    lua->open_libraries(sol::lib::base, sol::lib::package, sol::lib::os, sol::lib::math);
+    Camera::create_lua_bind(*lua, *camera);
+    Vertex::create_lua_bind(*lua);
 
-    // Initial load
-    reload_script();
+    registry = std::make_unique<Registry>();
+
+    auto ent1 = registry->create_entity();
+    auto ent2 = registry->create_entity();
+
+    std::cout << "ent1 id: " << static_cast<std::uint32_t>(ent1) << "\n";
+    std::cout << "ent2 id: " << static_cast<std::uint32_t>(ent2) << "\n";
+
+    auto lua_ctx = registry->add_to_context<std::shared_ptr<sol::state>>(std::move(lua));
+    auto result = lua_ctx->do_file("assets/scripts/main.lua");
+    if (result.valid()) {
+        script_update = result.get<sol::protected_function>(0);
+    } else {
+        sol::error err = result;
+        std::cerr << "Failed to load script: " << err.what() << "\n";
+    }
 
     return true;
 }
@@ -190,11 +179,6 @@ void game_loop() {
     texture->disable();
     shader->disable();
     SDL_GL_SwapWindow(p_window);
-
-    // Dynamic Hot Reload check
-#ifndef __EMSCRIPTEN__
-    reload_script();
-#endif
 
     if (script_update.valid()) {
         auto result = script_update();

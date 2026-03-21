@@ -12,8 +12,9 @@ void Vertex::create_lua_bind(sol::state& lua) {
 
     lua.new_usertype<Color>(
         "Color", sol::call_constructor,
-        sol::factories([](std::uint8_t r, std::uint8_t g, std::uint8_t b,
-                          std::uint8_t a) { return Color{.r_ = r, .g_ = g, .b_ = b, .a_ = a}; }),
+        sol::factories([](std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a) {
+            return Color{.r_ = r, .g_ = g, .b_ = b, .a_ = a};
+        }),
         "r", &Color::r_, "g", &Color::g_, "b", &Color::b_, "a", &Color::a_);
 
     lua.set("J2D_WHITE", Color{255, 255, 255, 255});
