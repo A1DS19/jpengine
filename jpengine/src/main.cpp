@@ -2,15 +2,18 @@
 #include "rendering/default-shaders.hpp"
 #include "rendering/shader.hpp"
 #include "rendering/texture.hpp"
+#include "rendering/vertex.hpp"
 #include "utils/asset-loader.hpp"
 
 #include <SDL_pixels.h>
 #include <SDL_surface.h>
 #include <cstddef>
+#include <glm/ext/vector_float2.hpp>
 #include <memory>
 #include <sol/state.hpp>
 #include <sol/types.hpp>
 #include <string_view>
+#include <vector>
 #ifdef __APPLE__
     #include <OpenGL/gl3.h>
 #else
@@ -26,14 +29,12 @@
 #include <SDL_video.h>
 #include <cstdlib>
 #include <iostream>
-#include <ostream>
 #include <sol/sol.hpp>
 #include <string>
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
 #endif
 
-#include <chrono>
 #include <filesystem>
 
 using namespace jpengine;
@@ -108,31 +109,28 @@ bool init_sdl() {
         return false;
     }
 
-    // A 200x200 quad centered at (400, 300) — screen center for 800x600
-    auto vertices = std::array<float, 16>{
-        0.0f,   0.0f,   0.0f, 0.0f, // v0 top-left
-        200.0f, 0.0f,   1.0f, 0.0f, // v1 top-right
-        200.0f, 200.0f, 1.0f, 1.0f, // v2 bottom-right
-        0.0f,   200.0f, 0.0f, 1.0f, // v3 bottom-left
-    };
-
-    auto indices = std::array<uint8_t, 6>{
-        0, 1, 2, // triangle 1
-        0, 2, 3, // triangle 2
-    };
+    std::vector<Vertex> vertices;
+    vertices.resize(6);
+    vertices[0] = Vertex{.position_ = glm::vec2{50.F, 0.F}, .uvs_ = UV{.u_ = 1.F, .v_ = 0.F}};
+    vertices[1] = Vertex{.position_ = glm::vec2{50.F, 50.F}, .uvs_ = UV{.u_ = 1.F, .v_ = 1.F}};
+    vertices[2] = Vertex{.position_ = glm::vec2{0.F, 0.F}, .uvs_ = UV{.u_ = 0.F, .v_ = 0.F}};
+    vertices[3] = Vertex{.position_ = glm::vec2{50.F, 50.F}, .uvs_ = UV{.u_ = 1.F, .v_ = 1.F}};
+    vertices[4] = Vertex{.position_ = glm::vec2{0.F, 50.F}, .uvs_ = UV{.u_ = 0.F, .v_ = 1.F}};
+    vertices[5] = Vertex{.position_ = glm::vec2{0.F, 0.F}, .uvs_ = UV{.u_ = 0.F, .v_ = 0.F}};
 
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size() * sizeof(Vertex)),
+                 vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*)offsetof(Vertex, position_));
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uvs_));
     glEnableVertexAttribArray(1);
 
     texture = jpengine::utils::AssetLoader::load_texture("assets/textures/character.png", true);
@@ -147,6 +145,7 @@ bool init_sdl() {
     camera->update();
     lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::os, sol::lib::math);
     Camera::create_lua_bind(lua, *camera);
+    Vertex::create_lua_bind(lua);
 
     // Initial load
     reload_script();
@@ -186,7 +185,7 @@ void game_loop() {
     auto camera_matrix = camera->get_camera_matrix();
     shader->set_uniform_mat4("u_projection", camera_matrix);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, nullptr);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     texture->disable();
     shader->disable();

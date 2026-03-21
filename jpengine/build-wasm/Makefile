@@ -276,6 +276,30 @@ src/rendering/texture.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/rendering/texture.cpp.s
 .PHONY : src/rendering/texture.cpp.s
 
+src/rendering/vertex.o: src/rendering/vertex.cpp.o
+.PHONY : src/rendering/vertex.o
+
+# target to build an object file
+src/rendering/vertex.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/rendering/vertex.cpp.o
+.PHONY : src/rendering/vertex.cpp.o
+
+src/rendering/vertex.i: src/rendering/vertex.cpp.i
+.PHONY : src/rendering/vertex.i
+
+# target to preprocess a source file
+src/rendering/vertex.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/rendering/vertex.cpp.i
+.PHONY : src/rendering/vertex.cpp.i
+
+src/rendering/vertex.s: src/rendering/vertex.cpp.s
+.PHONY : src/rendering/vertex.s
+
+# target to generate assembly for a file
+src/rendering/vertex.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/rendering/vertex.cpp.s
+.PHONY : src/rendering/vertex.cpp.s
+
 src/stb_impl.o: src/stb_impl.cpp.o
 .PHONY : src/stb_impl.o
 
@@ -1118,6 +1142,9 @@ help:
 	@echo "... src/rendering/texture.o"
 	@echo "... src/rendering/texture.i"
 	@echo "... src/rendering/texture.s"
+	@echo "... src/rendering/vertex.o"
+	@echo "... src/rendering/vertex.i"
+	@echo "... src/rendering/vertex.s"
 	@echo "... src/stb_impl.o"
 	@echo "... src/stb_impl.i"
 	@echo "... src/stb_impl.s"
