@@ -1,3 +1,4 @@
+#include "ecs/entity.hpp"
 #include "ecs/registry.hpp"
 #include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
@@ -126,9 +127,11 @@ bool init_sdl() {
 
     auto ent1 = registry->create_entity();
     auto ent2 = registry->create_entity();
+    Entity ent3{*registry};
 
     std::cout << "ent1 id: " << static_cast<std::uint32_t>(ent1) << "\n";
     std::cout << "ent2 id: " << static_cast<std::uint32_t>(ent2) << "\n";
+    std::cout << "ent3 id: " << static_cast<std::uint32_t>(ent3.get_entity()) << "\n";
 
     auto lua_ctx = registry->add_to_context<std::shared_ptr<sol::state>>(std::move(lua));
     auto result = lua_ctx->do_file("assets/scripts/main.lua");
