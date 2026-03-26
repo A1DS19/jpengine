@@ -1,6 +1,9 @@
 #pragma once
 #include "registry.hpp"
 
+#include <sol/table.hpp>
+#include <sol/types.hpp>
+
 namespace jpengine {
 class Entity {
 public:
@@ -35,10 +38,26 @@ public:
 
     static void create_lua_bind(sol::state& lua, Registry& registry);
 
+    template <typename TComponent>
+    static void register_meta_component();
+
 private:
     Registry& registry_;
     entt::entity entity_;
 };
+
+template <typename TComponent>
+auto add_component(Entity& entity, const sol::table& comp, sol::this_state state);
+
+template <typename TComponent>
+auto get_component(Entity& entity, sol::this_state state);
+
+template <typename TComponent>
+bool has_component(Entity& entity);
+
+template <typename TComponent>
+auto remove_component(Entity& entity);
+
 } // namespace jpengine
 
 #include "../../src/ecs/entity.inl"
