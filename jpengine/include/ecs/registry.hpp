@@ -6,6 +6,8 @@
 #include <sol/state.hpp>
 
 namespace jpengine {
+enum class ERegistryType { LUA, JPENGINE };
+
 class Registry {
 public:
     Registry();
@@ -33,9 +35,19 @@ public:
 
     static void create_lua_bind(sol::state& lua, Registry& registry);
 
+    template <typename TComponent>
+    static void register_meta_component();
+
 private:
     std::shared_ptr<entt::registry> registry_;
+    ERegistryType eregistry_type_{ERegistryType::JPENGINE};
 };
+
+template <typename TComponent>
+entt::runtime_view& add_component_to_view(Registry* pregistry, entt::runtime_view& view);
+
+template <typename TComponent>
+void exclude_component_from_view(Registry* pregistry, entt::runtime_view* view);
 } // namespace jpengine
 
 #include "../../src/ecs/registry.inl"

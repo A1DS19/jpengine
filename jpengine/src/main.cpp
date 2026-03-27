@@ -17,6 +17,7 @@
 #include <sol/state.hpp>
 #include <sol/types.hpp>
 #include <string_view>
+#include <sys/ucontext.h>
 #include <vector>
 #ifdef __APPLE__
     #include <OpenGL/gl3.h>
@@ -64,6 +65,15 @@ void register_meta_components() {
     Entity::register_meta_component<AnimationComponent>();
     Entity::register_meta_component<TransformComponent>();
     Entity::register_meta_component<RigidBodyComponent>();
+
+    Registry::register_meta_component<Identification>();
+    Registry::register_meta_component<TransformComponent>();
+    Registry::register_meta_component<SpriteComponent>();
+    Registry::register_meta_component<BoxColider>();
+    Registry::register_meta_component<CircleCollider>();
+    Registry::register_meta_component<AnimationComponent>();
+    Registry::register_meta_component<TransformComponent>();
+    Registry::register_meta_component<RigidBodyComponent>();
 }
 
 bool init_sdl() {
