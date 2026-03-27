@@ -4,6 +4,7 @@
 #include "utils/meta-utils.hpp"
 
 #include <cstdint>
+#include <lua.h>
 #include <sol/forward.hpp>
 #include <sol/raii.hpp>
 #include <sol/state.hpp>
@@ -24,12 +25,23 @@ void Entity::create_lua_bind(sol::state& lua, Registry& registry) {
         return Entity{registry, static_cast<entt::entity>(id)};
                        }),
         "add_component",
-        [](Entity& entity, const sol::table& comp, sol::this_state state) -> sol::object {
+        [](Entity& entity, sol::object comp, sol::this_state state) -> sol::object {
         if (!comp.valid()) {
             return sol::object{};
         }
 
-        const auto component = utils::invoke_meta_function(utils::get_id_type(comp),
+        // Use raw Lua API to get type_id — avoids constructing sol::table from userdata,
+        // which fails sol2's SOL_SAFE_REFERENCES check in debug builds.
+        lua_State* L = comp.lua_state();
+        comp.push();
+        lua_getfield(L, -1, "type_id"); // works for both tables and userdata (__index)
+        if (lua_isfunction(L, -1)) {
+            lua_call(L, 0, 1);          // call the static getter, result replaces function
+        }
+        const auto type_id = static_cast<entt::id_type>(lua_tointeger(L, -1));
+        lua_pop(L, 2);                  // pop result + original comp
+
+        const auto component = utils::invoke_meta_function(type_id,
                                                            "add_component"_hs, entity, comp, state);
 
         return component ? component.cast<sol::object>() : sol::object{};

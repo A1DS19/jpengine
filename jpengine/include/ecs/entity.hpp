@@ -1,6 +1,7 @@
 #pragma once
 #include "registry.hpp"
 
+#include <sol/object.hpp>
 #include <sol/table.hpp>
 #include <sol/types.hpp>
 
@@ -48,10 +49,10 @@ private:
 };
 
 template <typename TComponent>
-auto add_component(Entity& entity, const sol::table& comp, sol::this_state state);
+sol::object add_component(Entity& entity, sol::object& comp, sol::this_state state);
 
 template <typename TComponent>
-auto get_component(Entity& entity, sol::this_state state);
+sol::object get_component(Entity& entity, sol::this_state state);
 
 template <typename TComponent>
 bool has_component(Entity& entity);

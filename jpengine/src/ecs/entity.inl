@@ -63,17 +63,19 @@ void Entity::register_meta_component() {
 namespace jpengine {
 
 template <typename TComponent>
-auto add_component(Entity& entity, const sol::table& comp, sol::this_state state) {
+sol::object add_component(Entity& entity, sol::object& comp, sol::this_state state) {
     auto& component = entity.add_component<TComponent>(
-        comp.valid() ? std::move(comp.as<TComponent&&>()) : TComponent{});
-
-    return sol::make_reference(state, std::ref(component));
+        (comp.valid() && comp.is<TComponent>()) ? comp.as<TComponent>() : TComponent{});
+    return sol::make_object(state.lua_state(), std::ref(component));
 }
 
 template <typename TComponent>
-auto get_component(Entity& entity, sol::this_state state) {
+sol::object get_component(Entity& entity, sol::this_state state) {
     auto* pcomp = entity.try_get_component<TComponent>();
-    return pcomp ? sol::make_reference(state, std::ref(*pcomp)) : sol::lua_nil_t{};
+    if (pcomp) {
+        return sol::make_object(state.lua_state(), std::ref(*pcomp));
+    }
+    return sol::lua_nil_t{};
 }
 
 template <typename TComponent>

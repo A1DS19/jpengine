@@ -1,6 +1,7 @@
 #include "ecs/component.hpp"
 
 #include <glm/ext/vector_float2.hpp>
+#include <tuple>
 
 using namespace jpengine;
 
@@ -25,6 +26,8 @@ void ComponentBinder::create_lua_bind(sol::state& lua) {
                            return TransformComponent{.position_ = glm::vec2{x, y},
                                                      .rotation_ = rotation};
                        }),
+        "get_position",
+        [](const TransformComponent& t) { return std::make_tuple(t.position_.x, t.position_.y); },
         "position", &TransformComponent::position_, "scale", &TransformComponent::scale_,
         "rotation", &TransformComponent::rotation_);
 

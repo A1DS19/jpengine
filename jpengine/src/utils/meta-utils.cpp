@@ -13,8 +13,12 @@
         return entt::id_type(-1);
     }
 
-    const auto func = comp["type_id"].get<sol::function>();
-    assert(func.valid() && "[type_id()] function has not been exposed to lua");
+    // When comp is the type table, type_id is a property getter (callable).
+    // When comp is a userdata instance, __index returns the integer value directly.
+    const auto type_id_field = comp["type_id"];
+    if (const auto func = type_id_field.get<sol::function>(); func.valid()) {
+        return func().get<entt::id_type>();
+    }
 
-    return func.valid() ? func().get<entt::id_type>() : entt::id_type(-1);
+    return type_id_field.get<entt::id_type>();
 }

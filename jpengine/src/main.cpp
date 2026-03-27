@@ -1,6 +1,7 @@
 #include "ecs/component.hpp"
 #include "ecs/entity.hpp"
 #include "ecs/registry.hpp"
+#include "scripting/glm_bindings.hpp"
 #include "lobject.h"
 #include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
@@ -149,19 +150,14 @@ bool init_sdl() {
 
     Camera::create_lua_bind(*lua, *camera);
     Vertex::create_lua_bind(*lua);
+    GlmBinder::create_lua_bind(*lua);
     ComponentBinder::create_lua_bind(*lua);
+    Registry::create_lua_bind(*lua, *registry);
     Entity::create_lua_bind(*lua, *registry);
 
-    auto ent1 = registry->create_entity();
-    auto ent2 = registry->create_entity();
     Entity ent3{*registry};
-
     ent3.add_component<TransformComponent>(TransformComponent{
         .position_ = glm::vec2{200.F}, .scale_ = glm::vec2{4.F}, .rotation_ = 45.F});
-
-    std::cout << "ent1 id: " << static_cast<std::uint32_t>(ent1) << "\n";
-    std::cout << "ent2 id: " << static_cast<std::uint32_t>(ent2) << "\n";
-    std::cout << "ent3 id: " << static_cast<std::uint32_t>(ent3.get_entity()) << "\n";
 
     auto lua_ctx = registry->add_to_context<std::shared_ptr<sol::state>>(std::move(lua));
     auto result = lua_ctx->do_file("assets/scripts/main.lua");
@@ -188,15 +184,6 @@ void game_loop() {
 #ifdef __EMSCRIPTEN__
             emscripten_cancel_main_loop();
 #endif
-        }
-    }
-
-    auto view = registry->get_registry().view<TransformComponent>();
-    for (auto entity : view) {
-        Entity ent{*registry, entity};
-        if (auto* transform = ent.try_get_component<TransformComponent>()) {
-            std::cout << "position: [x = " << transform->position_.x << ", y]"
-                      << transform->position_.y << "\n";
         }
     }
 

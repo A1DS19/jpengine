@@ -51,7 +51,7 @@ void Registry::create_lua_bind(sol::state& lua, Registry& registry) {
             }
 
             for (; it != va.end(); ++it) {
-                sol::object obj = *it;
+                sol::object obj = it->as<sol::object>();
                 if (!obj.is<sol::table>()) continue;
 
                 sol::table type = obj.as<sol::table>();
