@@ -1,0 +1,27 @@
+name: WASM Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: latest
+
+      - name: Configure
+        working-directory: jpengine
+        run: emcmake cmake -B build-wasm -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        working-directory: jpengine
+        run: cmake --build build-wasm
