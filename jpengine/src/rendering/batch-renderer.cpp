@@ -59,6 +59,10 @@ void BatchRenderer::add_sprite(const glm::vec4& dest_rect, const glm::vec4& uv_r
             Vertex{.position_ = model * glm::vec4{dest_rect.x, dest_rect.y + dest_rect.w, 0.F, 1.F},
                    .uvs_ = UV{.u_ = uv_rect.x, .v_ = uv_rect.y + uv_rect.w},
                    .color_ = color},
+        .top_right_ = Vertex{.position_ = model * glm::vec4{dest_rect.x + dest_rect.z,
+                                                            dest_rect.y + dest_rect.w, 0.F, 1.F},
+                             .uvs_ = UV{.u_ = uv_rect.x + uv_rect.z, .v_ = uv_rect.y + uv_rect.w},
+                             .color_ = color},
         .bottom_left_ = Vertex{.position_ = model * glm::vec4{dest_rect.x, dest_rect.y, 0.F, 1.F},
                                .uvs_ = UV{.u_ = uv_rect.x, .v_ = uv_rect.y},
                                .color_ = color},
@@ -66,10 +70,6 @@ void BatchRenderer::add_sprite(const glm::vec4& dest_rect, const glm::vec4& uv_r
             Vertex{.position_ = model * glm::vec4{dest_rect.x + dest_rect.z, dest_rect.y, 0.F, 1.F},
                    .uvs_ = UV{.u_ = uv_rect.x + uv_rect.z, .v_ = uv_rect.y},
                    .color_ = color},
-        .top_right_ = Vertex{.position_ = model * glm::vec4{dest_rect.x + dest_rect.z,
-                                                            dest_rect.y + dest_rect.w, 0.F, 1.F},
-                             .uvs_ = UV{.u_ = uv_rect.x + uv_rect.z, .v_ = uv_rect.y + uv_rect.w},
-                             .color_ = color},
         .layer_ = layer,
         .texture_id_ = texture_id}));
 }
@@ -82,7 +82,7 @@ void BatchRenderer::render() {
     glBindVertexArray(vao_);
     for (const auto& batch : batches_) {
         glBindTexture(GL_TEXTURE_2D, batch->texture_id_);
-        glDrawElements(GL_TRIANGLES, batch->num_indices_, GL_UNSIGNED_INT,
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(batch->num_indices_), GL_UNSIGNED_INT,
                        reinterpret_cast<void*>(sizeof(GLuint) * batch->offset_));
     }
 }
@@ -91,7 +91,7 @@ void BatchRenderer::create_batches() {
     std::vector<Vertex> vertices;
     vertices.resize(sprite_glyphs_.size() * NUM_SPRITE_VERTICES);
 
-    int current_index{0};
+    std::size_t current_index{0};
     int current_sprite{0};
     GLuint offset{0};
     GLuint prev_texture_id{0};
@@ -120,8 +120,8 @@ void BatchRenderer::create_batches() {
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() + sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() + sizeof(Vertex), vertices.data());
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(vertices.size() * sizeof(Vertex)), nullptr, GL_DYNAMIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLsizeiptr>(vertices.size() * sizeof(Vertex)), vertices.data());
 }
 
 void BatchRenderer::init() {

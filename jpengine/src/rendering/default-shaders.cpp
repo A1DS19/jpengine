@@ -5,7 +5,7 @@ using namespace jpengine;
 const char* DefaultShaders::basic_shader_vert = R"(#version 300 es
 in vec2 a_pos;
 in vec2 a_uvs;
-in vec4 a_color
+in vec4 a_color;
 
 out vec2 frag_uvs;
 out vec4 frag_color;
