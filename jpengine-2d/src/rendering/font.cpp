@@ -2,7 +2,6 @@
 
 #include "rendering/vertex.hpp"
 
-#include <GLES3/gl3.h>
 #include <glm/ext/vector_float2.hpp>
 #include <stb/stb_truetype.h>
 
