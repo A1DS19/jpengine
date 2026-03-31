@@ -1,6 +1,11 @@
 #include "ecs/component.hpp"
 
+#include "rendering/vertex.hpp"
+
 #include <glm/ext/vector_float2.hpp>
+#include <sol/raii.hpp>
+#include <string>
+#include <string_view>
 #include <tuple>
 
 using namespace jpengine;
@@ -93,4 +98,20 @@ void ComponentBinder::create_lua_bind(sol::state& lua) {
             [](const glm::vec2& velocity) { return RigidBodyComponent{.velocity_ = velocity}; }),
         "velocity", &RigidBodyComponent::velocity_, "max_velocity",
         &RigidBodyComponent::max_velocity_);
+
+    lua.new_usertype<TextComponent>(
+        "TextComponent", "type_id", &entt::type_hash<TextComponent>::value, sol::call_constructor,
+        sol::factories(
+            []() { return TextComponent{}; },
+            [](std::string_view font, std::string_view text) {
+                return TextComponent{.font_name_ = font.data(), .text_ = text.data()};
+            },
+            [](std::string_view font, std::string_view text, const Color& color) {
+                return TextComponent{
+                    .font_name_ = font.data(), .text_ = text.data(), .color_ = color};
+            }),
+        "font_name", &TextComponent::font_name_, "text", &TextComponent::text_, "color",
+        &TextComponent::color_, "hidden", &TextComponent::hidden_
+
+    );
 }

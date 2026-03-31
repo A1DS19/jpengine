@@ -16,6 +16,11 @@ entity_3:add_component(Transform(96.0, 69.0, 0.0))
 local sprite_3 = entity_3:add_component(Sprite("character", 32, 32, 0, 0, 0, J2D_GREEN))
 sprite_3:generate_uvs(32, 32)
 
+local registry = Registry()
+local entity_4 = registry:create_entity()
+entity_4:add_component(Transform(620.0, 75.0, 0.0))
+entity_4:add_component(TextComponent("pixel", "testing from lua binding"))
+
 local view = registry:get_entities(Transform)
 
 view:for_each(function(entity)

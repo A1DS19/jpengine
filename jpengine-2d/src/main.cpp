@@ -55,7 +55,6 @@ std::shared_ptr<Shader> shader{nullptr};
 std::shared_ptr<Texture> texture{nullptr};
 std::unique_ptr<Camera> camera{nullptr};
 std::unique_ptr<BatchRenderer> pbatch_renderer{nullptr};
-std::unique_ptr<Registry> pregistry{nullptr};
 std::shared_ptr<Font> pfont{nullptr};
 
 sol::protected_function script_update;
@@ -70,6 +69,7 @@ void register_meta_components() {
     Entity::register_meta_component<AnimationComponent>();
     Entity::register_meta_component<TransformComponent>();
     Entity::register_meta_component<RigidBodyComponent>();
+    Entity::register_meta_component<TextComponent>();
 
     Registry::register_meta_component<Identification>();
     Registry::register_meta_component<TransformComponent>();
@@ -79,6 +79,7 @@ void register_meta_components() {
     Registry::register_meta_component<AnimationComponent>();
     Registry::register_meta_component<TransformComponent>();
     Registry::register_meta_component<RigidBodyComponent>();
+    Registry::register_meta_component<TextComponent>();
 }
 
 bool init_sdl() {
@@ -221,6 +222,13 @@ void game_loop() {
             emscripten_cancel_main_loop();
 #endif
         }
+    }
+
+    auto text_view = registry->get_registry().view<TextComponent>();
+    for (auto entity : text_view) {
+        Entity ent{*registry, entity};
+        const auto& text = ent.get_component<TextComponent>();
+        std::cout << "Text: " << text.text_ << "\n";
     }
 
     SDL_GL_MakeCurrent(p_window, gl_context);

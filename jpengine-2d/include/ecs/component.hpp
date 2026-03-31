@@ -90,4 +90,11 @@ struct ComponentBinder {
     static void create_lua_bind(sol::state& lua);
 };
 
+struct TextComponent {
+    std::string font_name_{"pixel"};
+    std::string text_{"default text"};
+    Color color_{255, 255, 255, 255};
+    bool hidden_{false};
+};
+
 } // namespace jpengine
