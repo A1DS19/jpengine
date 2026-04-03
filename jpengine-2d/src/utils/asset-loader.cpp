@@ -135,16 +135,16 @@ std::shared_ptr<jpengine::Font> AssetLoader::load_font(std::string_view filename
     }
 
     font_stream.seekg(0, font_stream.end);
-    int64_t length = font_stream.tellg();
+    auto length = static_cast<std::size_t>(font_stream.tellg());
 
     font_stream.seekg(0, font_stream.beg);
     std::vector<unsigned char> buffer;
     buffer.resize(length);
 
     std::vector<unsigned char> bitmap;
-    bitmap.resize(width * heigth);
+    bitmap.resize(static_cast<std::size_t>(width) * static_cast<std::size_t>(heigth));
 
-    font_stream.read((char*)(&buffer[0]), length);
+    font_stream.read((char*)(&buffer[0]), static_cast<std::streamsize>(length));
 
     auto data = std::make_unique<stbtt_bakedchar[]>(96);
     int result = stbtt_BakeFontBitmap(buffer.data(), 0, font_size, bitmap.data(), width, heigth, 32,

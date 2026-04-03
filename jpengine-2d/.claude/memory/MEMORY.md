@@ -1,0 +1,2 @@
+- [Jose Padilla](user_jose.md) — Engine author, C++23/OpenGL/Lua/WASM developer
+- [JPEngine-2D Architecture](project_jpengine2d.md) — Full engine architecture: ECS, rendering, scripting, build system
