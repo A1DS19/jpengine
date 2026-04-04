@@ -49,9 +49,43 @@ function update_mouse()
 	end
 end
 
+function update_gamepad()
+	if not Gamepad.is_gamepad_present() then
+		return
+	end
+
+	local transform = entity_1:get_component(Transform)
+	if Gamepad.pressed(DPAD_UP) then
+		transform.position.y = transform.position.y - 10
+	elseif Gamepad.pressed(DPAD_DOWN) then
+		transform.position.y = transform.position.y + 10
+	elseif Gamepad.pressed(DPAD_LEFT) then
+		transform.position.x = transform.position.x - 10
+	elseif Gamepad.pressed(DPAD_RIGHT) then
+		transform.position.x = transform.position.x + 10
+	end
+
+	local deadzone = 8000
+	local axis_x = Gamepad.get_axis_position(AXIS_X1)
+	local axis_y = Gamepad.get_axis_position(AXIS_Y1)
+
+	if axis_x < -deadzone then
+		transform.position.x = transform.position.x - 10
+	elseif axis_x > deadzone then
+		transform.position.x = transform.position.x + 10
+	end
+
+	if axis_y < -deadzone then
+		transform.position.y = transform.position.y - 10
+	elseif axis_y > deadzone then
+		transform.position.y = transform.position.y + 10
+	end
+end
+
 main = {
 	update = function()
 		update_keyboard()
 		update_mouse()
+		update_gamepad()
 	end,
 }

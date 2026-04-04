@@ -1,6 +1,7 @@
 #include "ecs/component.hpp"
 #include "ecs/entity.hpp"
 #include "ecs/registry.hpp"
+#include "inputs/gamepad.hpp"
 #include "inputs/keyboard.hpp"
 #include "inputs/mouse.hpp"
 #include "rendering/batch-renderer.hpp"
@@ -14,6 +15,7 @@
 #include "scripting/glm_bindings.hpp"
 #include "utils/asset-loader.hpp"
 
+#include <SDL_gamecontroller.h>
 #include <SDL_pixels.h>
 #include <SDL_surface.h>
 #include <cstddef>
@@ -67,6 +69,7 @@ std::unique_ptr<TextBatchRenderer> ptext_batch_renderer{nullptr};
 std::unique_ptr<Registry> registry = nullptr;
 std::unique_ptr<Keyboard> pkeyboard{nullptr};
 std::unique_ptr<Mouse> pmouse{nullptr};
+std::unique_ptr<Gamepad> pgamepad{nullptr};
 
 sol::protected_function script_update;
 
@@ -119,7 +122,7 @@ void register_meta_components() {
 
 bool init_sdl() {
     std::cout << "initializing sdl\n";
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
         std::cerr << "sdl initialization failed: " << SDL_GetError() << "\n";
         return EXIT_FAILURE;
     }
@@ -207,6 +210,7 @@ bool init_sdl() {
 
     pkeyboard = std::make_unique<Keyboard>();
     pmouse = std::make_unique<Mouse>();
+    pgamepad = std::make_unique<Gamepad>();
 
     Camera::create_lua_bind(*lua, *camera);
     Vertex::create_lua_bind(*lua);
@@ -216,6 +220,7 @@ bool init_sdl() {
     Entity::create_lua_bind(*lua, *registry);
     Keyboard::create_lua_bind(*lua, *pkeyboard);
     Mouse::create_lua_bind(*lua, *pmouse);
+    Gamepad::create_lua_bind(*lua, *pgamepad);
 
     auto lua_ctx = registry->add_to_context<std::shared_ptr<sol::state>>(std::move(lua));
 
@@ -309,6 +314,40 @@ void game_loop() {
                 pmouse->set_mouse_moving(true);
                 break;
 
+            case SDL_CONTROLLERBUTTONDOWN:
+                pgamepad->on_btn_pressed(event.cbutton.button);
+                break;
+
+            case SDL_CONTROLLERBUTTONUP:
+                pgamepad->on_btn_released(event.cbutton.button);
+                break;
+
+            case SDL_CONTROLLERDEVICEADDED: {
+                std::cout << "controller detected: " << event.jdevice.which << "\n";
+                if (!pgamepad->is_game_pad_present()) {
+                    pgamepad->set_controller(
+                        make_shared_controller(SDL_GameControllerOpen(event.jdevice.which)));
+                }
+
+                break;
+            }
+
+            case SDL_CONTROLLERDEVICEREMOVED: {
+                if (pgamepad->is_game_pad_present()) {
+                    pgamepad->remove_controller();
+                }
+
+                break;
+            }
+
+            case SDL_JOYAXISMOTION:
+                pgamepad->set_axis_position_value(event.jaxis.axis, event.jaxis.value);
+                break;
+
+            case SDL_JOYHATMOTION:
+                pgamepad->set_joystick_hat_value(event.jhat.value);
+                break;
+
             case SDL_QUIT:
 #ifdef __EMSCRIPTEN__
                 emscripten_cancel_main_loop();
@@ -352,6 +391,7 @@ void game_loop() {
     camera->update();
     pkeyboard->update();
     pmouse->update();
+    pgamepad->update();
 }
 auto main() -> int {
     if (!init_sdl()) {
