@@ -28,26 +28,30 @@ view:for_each(function(entity)
 	local x, y = transform:get_position()
 end)
 
--- local registry_2 = Registry(RegistryType.LUA)
--- local entity_4 = registry_2:create_entity()
--- entity_4:add_component(Transform(999.0, 999.0, 0.0))
--- local view_2 = registry_2:get_entities(Transform)
--- view_2:for_each(registry_2, function(entity)
--- 	local transform = entity:get_component(Transform)
--- 	local x, y = transform:get_position()
--- end)
+function update_keyboard()
+	local transform = entity_1:get_component(Transform)
+	if Keyboard.pressed(KEY_W) then
+		transform.position.y = transform.position.y - 10
+	elseif Keyboard.pressed(KEY_S) then
+		transform.position.y = transform.position.y + 10
+	elseif Keyboard.pressed(KEY_A) then
+		transform.position.x = transform.position.x - 10
+	elseif Keyboard.pressed(KEY_D) then
+		transform.position.x = transform.position.x + 10
+	end
+end
+
+function update_mouse()
+	if Mouse.just_pressed(LEFT_BTN) then
+		print("left mouse btn pressed")
+		local mouse_pos = Mouse.screen_position()
+		print("mouse pos: [x=" .. mouse_pos.x .. "y=" .. mouse_pos.y .. "]")
+	end
+end
 
 main = {
 	update = function()
-		local transform = entity_1:get_component(Transform)
-		if Keyboard.pressed(KEY_W) then
-			transform.position.y = transform.position.y - 10
-		elseif Keyboard.pressed(KEY_S) then
-			transform.position.y = transform.position.y + 10
-		elseif Keyboard.pressed(KEY_A) then
-			transform.position.x = transform.position.x - 10
-		elseif Keyboard.pressed(KEY_D) then
-			transform.position.x = transform.position.x + 10
-		end
+		update_keyboard()
+		update_mouse()
 	end,
 }

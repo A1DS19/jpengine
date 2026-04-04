@@ -2,6 +2,7 @@
 #include "ecs/entity.hpp"
 #include "ecs/registry.hpp"
 #include "inputs/keyboard.hpp"
+#include "inputs/mouse.hpp"
 #include "rendering/batch-renderer.hpp"
 #include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
@@ -65,6 +66,7 @@ std::unique_ptr<BatchRenderer> pbatch_renderer{nullptr};
 std::unique_ptr<TextBatchRenderer> ptext_batch_renderer{nullptr};
 std::unique_ptr<Registry> registry = nullptr;
 std::unique_ptr<Keyboard> pkeyboard{nullptr};
+std::unique_ptr<Mouse> pmouse{nullptr};
 
 sol::protected_function script_update;
 
@@ -204,6 +206,7 @@ bool init_sdl() {
     register_meta_components();
 
     pkeyboard = std::make_unique<Keyboard>();
+    pmouse = std::make_unique<Mouse>();
 
     Camera::create_lua_bind(*lua, *camera);
     Vertex::create_lua_bind(*lua);
@@ -212,6 +215,7 @@ bool init_sdl() {
     Registry::create_lua_bind(*lua, *registry);
     Entity::create_lua_bind(*lua, *registry);
     Keyboard::create_lua_bind(*lua, *pkeyboard);
+    Mouse::create_lua_bind(*lua, *pmouse);
 
     auto lua_ctx = registry->add_to_context<std::shared_ptr<sol::state>>(std::move(lua));
 
@@ -289,6 +293,22 @@ void game_loop() {
                 pkeyboard->on_key_released(event.key.keysym.sym);
                 break;
 
+            case SDL_MOUSEBUTTONDOWN:
+                pmouse->on_btn_pressed(event.button.button);
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                pmouse->on_btn_released(event.button.button);
+                break;
+
+            case SDL_MOUSEWHEEL:
+                pmouse->set_mouse_wheel_values(event.wheel.x, event.wheel.y);
+                break;
+
+            case SDL_MOUSEMOTION:
+                pmouse->set_mouse_moving(true);
+                break;
+
             case SDL_QUIT:
 #ifdef __EMSCRIPTEN__
                 emscripten_cancel_main_loop();
@@ -331,6 +351,7 @@ void game_loop() {
 
     camera->update();
     pkeyboard->update();
+    pmouse->update();
 }
 auto main() -> int {
     if (!init_sdl()) {
