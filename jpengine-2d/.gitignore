@@ -7,6 +7,7 @@ bin/*
 !bin/.gitkeep
 lib/*
 !lib/.gitkeep
+.tmp/
 
 # CMake
 CMakeCache.txt

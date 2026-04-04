@@ -37,12 +37,17 @@ end)
 -- 	local x, y = transform:get_position()
 -- end)
 
-local g_cam = Camera.get()
-
-return function()
-	if g_cam then
-		local x, y = g_cam:get_position()
-		g_cam:set_position(x - 0.5, y - 0.5)
-		g_cam:set_scale(g_cam:get_scale() * 1.001)
-	end
-end
+main = {
+	update = function()
+		local transform = entity_1:get_component(Transform)
+		if Keyboard.pressed(KEY_W) then
+			transform.position.y = transform.position.y - 10
+		elseif Keyboard.pressed(KEY_S) then
+			transform.position.y = transform.position.y + 10
+		elseif Keyboard.pressed(KEY_A) then
+			transform.position.x = transform.position.x - 10
+		elseif Keyboard.pressed(KEY_D) then
+			transform.position.x = transform.position.x + 10
+		end
+	end,
+}

@@ -1,6 +1,7 @@
 #include "ecs/component.hpp"
 #include "ecs/entity.hpp"
 #include "ecs/registry.hpp"
+#include "inputs/keyboard.hpp"
 #include "rendering/batch-renderer.hpp"
 #include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
@@ -17,6 +18,8 @@
 #include <cstddef>
 #include <glm/ext/vector_float2.hpp>
 #include <memory>
+#include <sol/forward.hpp>
+#include <sol/optional_implementation.hpp>
 #include <sol/state.hpp>
 #include <sol/types.hpp>
 #include <string_view>
@@ -55,13 +58,40 @@ GLuint ebo{0};
 std::shared_ptr<Shader> shader{nullptr};
 std::shared_ptr<Shader> pfont_shader{nullptr};
 std::shared_ptr<Texture> texture{nullptr};
+std::shared_ptr<Font> pfont{nullptr};
+
 std::unique_ptr<Camera> camera{nullptr};
 std::unique_ptr<BatchRenderer> pbatch_renderer{nullptr};
 std::unique_ptr<TextBatchRenderer> ptext_batch_renderer{nullptr};
-std::shared_ptr<Font> pfont{nullptr};
+std::unique_ptr<Registry> registry = nullptr;
+std::unique_ptr<Keyboard> pkeyboard{nullptr};
 
 sol::protected_function script_update;
-std::unique_ptr<Registry> registry = nullptr;
+
+bool load_main_script() {
+    auto& plua_state = registry->get_context<std::shared_ptr<sol::state>>();
+    auto result = plua_state->safe_script_file("assets/scripts/main.lua");
+
+    if (!result.valid()) {
+        std::cerr << "failed to load main lua script\n";
+        return false;
+    }
+
+    sol::optional<sol::table> opt_main_table = (*plua_state)["main"];
+    if (!opt_main_table) {
+        std::cerr << "failed to load main script, main table does not exist\n";
+        return false;
+    }
+
+    sol::optional<sol::protected_function> opt_update_func = (*plua_state)["main"]["update"];
+    if (!opt_update_func) {
+        std::cerr << "failed to load update function, update function does not exists\n";
+        return false;
+    }
+
+    script_update = opt_update_func.value();
+    return true;
+}
 
 void register_meta_components() {
     Entity::register_meta_component<Identification>();
@@ -173,24 +203,21 @@ bool init_sdl() {
 
     register_meta_components();
 
+    pkeyboard = std::make_unique<Keyboard>();
+
     Camera::create_lua_bind(*lua, *camera);
     Vertex::create_lua_bind(*lua);
     GlmBinder::create_lua_bind(*lua);
     ComponentBinder::create_lua_bind(*lua);
     Registry::create_lua_bind(*lua, *registry);
     Entity::create_lua_bind(*lua, *registry);
-
-    Entity ent3{*registry};
-    ent3.add_component<TransformComponent>(TransformComponent{
-        .position_ = glm::vec2{200.F}, .scale_ = glm::vec2{4.F}, .rotation_ = 45.F});
+    Keyboard::create_lua_bind(*lua, *pkeyboard);
 
     auto lua_ctx = registry->add_to_context<std::shared_ptr<sol::state>>(std::move(lua));
-    auto result = lua_ctx->do_file("assets/scripts/main.lua");
-    if (result.valid()) {
-        script_update = result.get<sol::protected_function>(0);
-    } else {
-        sol::error err = result;
-        std::cerr << "Failed to load script: " << err.what() << "\n";
+
+    if (!load_main_script()) {
+        std::cerr << "failed to load main script\n";
+        return false;
     }
 
     return true;
@@ -252,10 +279,24 @@ void cleanup() {
 void game_loop() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
+        switch (event.type) {
+
+            case SDL_KEYDOWN:
+                pkeyboard->on_key_pressed(event.key.keysym.sym);
+                break;
+
+            case SDL_KEYUP:
+                pkeyboard->on_key_released(event.key.keysym.sym);
+                break;
+
+            case SDL_QUIT:
 #ifdef __EMSCRIPTEN__
-            emscripten_cancel_main_loop();
+                emscripten_cancel_main_loop();
 #endif
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -289,9 +330,9 @@ void game_loop() {
     }
 
     camera->update();
+    pkeyboard->update();
 }
 auto main() -> int {
-    std::cout << "starting game...\n";
     if (!init_sdl()) {
         return EXIT_FAILURE;
     }
