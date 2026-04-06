@@ -3,7 +3,11 @@
 #include "rendering/font.hpp"
 #include "rendering/vertex.hpp"
 
-#include <GLES3/gl3.h>
+#ifdef __APPLE__
+    #include <OpenGL/gl3.h>
+#else
+    #include <GLES3/gl3.h>
+#endif
 #include <cstddef>
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float4.hpp>
