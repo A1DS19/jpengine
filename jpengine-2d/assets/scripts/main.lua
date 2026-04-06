@@ -1,4 +1,5 @@
-print("running lua script")
+j2d_run_script("assets/scripts/defs/asset-defs.lua")
+load_assets(asset_defs)
 
 local entity_1 = Entity()
 entity_1:add_component(Transform(100.0, 150.0, 1, 1, 0.0))

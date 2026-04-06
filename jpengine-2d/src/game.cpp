@@ -91,11 +91,6 @@ bool Game::initialize() {
         std::cerr << "failed to load shaders succesfully\n";
     }
 
-    if (!load_temp_assets()) {
-        std::cerr << "failed to load assets\n";
-        return false;
-    }
-
     register_meta_components();
     register_lua_bindings();
 
@@ -133,10 +128,12 @@ bool Game::initialize_registry() {
 
 bool Game::load_main_script() {
     auto& plua_state = pregistry_->get_context<SolStatePtr>();
-    auto result = plua_state->safe_script_file("assets/scripts/main.lua");
+    auto result =
+        plua_state->safe_script_file("assets/scripts/main.lua", sol::script_pass_on_error);
 
     if (!result.valid()) {
-        std::cerr << "failed to load main lua script\n";
+        sol::error err = result;
+        std::cerr << "failed to load main lua script: " << err.what() << "\n";
         return false;
     }
 
@@ -227,8 +224,10 @@ void Game::register_meta_components() {
 void Game::register_lua_bindings() {
     auto& plua_state = pregistry_->get_context<SolStatePtr>();
     auto& pcamera = pregistry_->get_context<CameraPtr>();
+    auto& passet_manager = pregistry_->get_context<AssetManagerPtr>();
     auto& pinput_context = pregistry_->get_context<InputCtxPtr>();
 
+    AssetManager::create_lua_bind(*plua_state, *passet_manager);
     Camera::create_lua_bind(*plua_state, *pcamera);
     Vertex::create_lua_bind(*plua_state);
     GlmBinder::create_lua_bind(*plua_state);
@@ -424,36 +423,4 @@ void Game::cleanup() {
     SDL_GL_DeleteContext(pglcontext_);
     SDL_DestroyWindow(pwindow_);
     SDL_Quit();
-}
-
-// temp
-bool Game::load_temp_assets() {
-    auto& passet_manager = pregistry_->get_context<AssetManagerPtr>();
-
-    if (!passet_manager->add_font("pixel", "assets/fonts/pixel.ttf")) {
-        std::cerr << "failed to load pixel font" << "\n";
-        return false;
-    }
-
-    if (!passet_manager->add_texture("character", "assets/textures/character.png", true)) {
-        std::cerr << "failed to load texture [character.png]";
-        return false;
-    }
-
-    if (!passet_manager->add_music("field-of-dreams", "assets/music/the_field_of_dreams.mp3")) {
-        std::cerr << "failed to load music";
-        return false;
-    }
-
-    if (!passet_manager->add_soundfx("menu-accept", "assets/soundfx/menu_accept.ogg")) {
-        std::cerr << "failed to load soundfx";
-        return false;
-    }
-
-    if (auto pmusic = passet_manager->get_music("field-of-dreams")) {
-        auto& paudio_context = pregistry_->get_context<AudioCtxPtr>();
-        paudio_context->pmusic_player_->play(pmusic, -1);
-    }
-
-    return true;
 }

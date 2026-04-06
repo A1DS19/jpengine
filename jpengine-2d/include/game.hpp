@@ -79,8 +79,6 @@ private:
     void render_text();
     void render_sprites();
     void cleanup();
-
-    bool load_temp_assets();
 };
 
 } // namespace jpengine

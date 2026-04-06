@@ -167,11 +167,10 @@ bool AssetManager::clear() {
 }
 
 void AssetManager::create_lua_bind(sol::state& lua, AssetManager& asset_manager) {
-    (void)asset_manager;
-
     lua.new_usertype<AssetManager>(
         "AssetManager", sol::no_constructor, "add_texture", &AssetManager::add_texture,
         "get_texture", &AssetManager::get_texture, "add_music", &AssetManager::add_music,
         "add_soundfx", &AssetManager::add_soundfx, "add_font", &AssetManager::add_font, "get_font",
         &AssetManager::get_font);
+    lua["AssetManager"] = &asset_manager;
 }

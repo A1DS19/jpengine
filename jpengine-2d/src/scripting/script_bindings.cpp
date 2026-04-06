@@ -1,6 +1,8 @@
 #include "scripting/script_bindings.hpp"
 
 #include <SDL_timer.h>
+#include <iostream>
+#include <sol/error.hpp>
 
 using namespace jpengine;
 
