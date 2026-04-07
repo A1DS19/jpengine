@@ -89,7 +89,34 @@ set_target_properties(
              CXX_EXTENSIONS OFF)
 
 # SDL2 + OpenGL ES 3
+set(GAME "platformer" CACHE STRING "Game to build (must match a folder under games/)")
+set(GAME_DIR "${CMAKE_SOURCE_DIR}/games/${GAME}")
+set(GAME_ASSETS_DIR "${GAME_DIR}/assets")
+set(GAME_WEB_DIR "${GAME_DIR}/web")
+set(GAME_SHELL "${GAME_WEB_DIR}/shell.html")
+
+if(NOT EXISTS "${GAME_ASSETS_DIR}")
+  message(FATAL_ERROR "Game assets not found: ${GAME_ASSETS_DIR}\nMake sure games/${GAME}/assets/ exists.")
+endif()
+
+message(STATUS "  Game:             ${GAME}")
+message(STATUS "  Game assets:      ${GAME_ASSETS_DIR}")
+
 if(EMSCRIPTEN)
+  # Use per-game shell.html if present, otherwise fall back to Emscripten's default
+  if(EXISTS "${GAME_SHELL}")
+    message(STATUS "  Shell:            ${GAME_SHELL}")
+    set(SHELL_FILE_OPTION --shell-file ${GAME_SHELL})
+  else()
+    message(STATUS "  Shell:            (Emscripten default)")
+    set(SHELL_FILE_OPTION "")
+  endif()
+
+  # Copy web/ directory (images, css, etc.) to bin/ so the shell can reference them
+  if(EXISTS "${GAME_WEB_DIR}")
+    file(COPY ${GAME_WEB_DIR}/ DESTINATION ${CMAKE_SOURCE_DIR}/bin)
+  endif()
+
   # Emscripten bundles SDL2 as a port — WebGL2 = GLES3
   set_target_properties(main PROPERTIES SUFFIX ".html")
   target_compile_options(main PRIVATE -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_MIXER=2
@@ -106,8 +133,9 @@ if(EMSCRIPTEN)
     -sUSE_WEBGL2=1
     -sFULL_ES3=1
     -fwasm-exceptions
+    ${SHELL_FILE_OPTION}
     --preload-file
-    ${CMAKE_SOURCE_DIR}/assets@/assets)
+    ${GAME_ASSETS_DIR}@/assets)
 else()
   find_package(SDL2 REQUIRED)
   target_include_directories(main PRIVATE ${SDL2_INCLUDE_DIRS})

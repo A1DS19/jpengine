@@ -164,7 +164,7 @@ endif
 $(BUILD_DIR)/Makefile: CMakeLists.txt
 	@echo "$(BOLD)$(BLUE)Configuring CMake for $(PLATFORM)...$(RESET)"
 	@$(MKDIR) $(BUILD_DIR) 2>$(NULL_DEVICE) || true
-	@cmake -B $(BUILD_DIR) -S . -G $(CMAKE_GENERATOR) $(CMAKE_FLAGS)
+	@cmake -B $(BUILD_DIR) -S . -G $(CMAKE_GENERATOR) $(CMAKE_FLAGS) -DGAME=$(GAME)
 
 # Clean target
 .PHONY: clean
@@ -630,15 +630,16 @@ endif
 # ─── Emscripten / WebAssembly targets ─────────────────────────────────────────
 
 WASM_BUILD_DIR := build-wasm
+GAME           ?= platformer
 
 HAS_EMCMAKE := $(shell $(SHELL_CHECK) emcmake >$(NULL_DEVICE) 2>&1 && echo "yes" || echo "no")
 
 .PHONY: wasm
 wasm:
 ifeq ($(HAS_EMCMAKE),yes)
-	@echo "$(BOLD)$(BLUE)Building WebAssembly with Emscripten...$(RESET)"
+	@echo "$(BOLD)$(BLUE)Building WebAssembly with Emscripten (game: $(GAME))...$(RESET)"
 	@$(MKDIR) $(WASM_BUILD_DIR) $(BIN_DIR)
-	@emcmake cmake -B $(WASM_BUILD_DIR) -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-sUSE_SDL_MIXER=2" -DCMAKE_CXX_FLAGS="-sUSE_SDL_MIXER=2" -DCMAKE_EXE_LINKER_FLAGS='-sUSE_SDL_MIXER=2 -sSDL2_MIXER_FORMATS=["ogg","mp3"]'
+	@emcmake cmake -B $(WASM_BUILD_DIR) -S . -DCMAKE_BUILD_TYPE=Release -DGAME=$(GAME)
 	@cmake --build $(WASM_BUILD_DIR)
 	@echo "$(GREEN)Build complete! Output: $(BIN_DIR)/main.html$(RESET)"
 else
