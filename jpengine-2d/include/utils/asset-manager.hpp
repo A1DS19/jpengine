@@ -20,14 +20,14 @@ public:
 
     bool add_texture(const std::string& texture_name, const std::string& filename,
                      bool pixel_art = true);
-    std::shared_ptr<Texture> get_texture(const std::string& texture_name);
+    Texture* get_texture(const std::string& texture_name);
 
     bool add_shader_from_memory(const std::string& shader_name, const std::string& vert_data,
                                 const std::string& frag_data);
-    std::shared_ptr<Shader> get_shader(const std::string& shader_name);
+    Shader* get_shader(const std::string& shader_name);
 
     bool add_font(const std::string& font_name, const std::string& filename, float fontsize = 32.F);
-    std::shared_ptr<Font> get_font(const std::string& font_name);
+    Font* get_font(const std::string& font_name);
 
     bool add_music(const std::string& music_name, const std::string& filename);
     Mix_Music* get_music(const std::string& music_name);
@@ -40,9 +40,9 @@ public:
     static void create_lua_bind(sol::state& lua, AssetManager& asset_manager);
 
 private:
-    std::unordered_map<std::string, std::shared_ptr<Texture>> map_textures_;
-    std::unordered_map<std::string, std::shared_ptr<Shader>> map_shaders_;
-    std::unordered_map<std::string, std::shared_ptr<Font>> map_fonts_;
+    std::unordered_map<std::string, std::unique_ptr<Texture>> map_textures_;
+    std::unordered_map<std::string, std::unique_ptr<Shader>> map_shaders_;
+    std::unordered_map<std::string, std::unique_ptr<Font>> map_fonts_;
     std::unordered_map<std::string, Mix_Music*> map_music_;
     std::unordered_map<std::string, Mix_Chunk*> map_soundfxs_;
 };

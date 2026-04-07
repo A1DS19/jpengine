@@ -30,14 +30,14 @@ bool AssetManager::add_texture(const std::string& texture_name, const std::strin
     return inserted;
 }
 
-std::shared_ptr<Texture> AssetManager::get_texture(const std::string& texture_name) {
+Texture* AssetManager::get_texture(const std::string& texture_name) {
     auto texture_iter = map_textures_.find(texture_name);
     if (texture_iter == map_textures_.end()) {
         std::cerr << "failed to find: " << texture_name << "\n";
         return nullptr;
     }
 
-    return texture_iter->second;
+    return texture_iter->second.get();
 }
 
 bool AssetManager::add_shader_from_memory(const std::string& shader_name,
@@ -59,14 +59,14 @@ bool AssetManager::add_shader_from_memory(const std::string& shader_name,
     return inserted;
 }
 
-std::shared_ptr<Shader> AssetManager::get_shader(const std::string& shader_name) {
+Shader* AssetManager::get_shader(const std::string& shader_name) {
     auto shader_iter = map_shaders_.find(shader_name);
     if (shader_iter == map_shaders_.end()) {
         std::cerr << "failed to find: " << shader_name << "\n";
         return nullptr;
     }
 
-    return shader_iter->second;
+    return shader_iter->second.get();
 }
 
 bool AssetManager::add_font(const std::string& font_name, const std::string& filename,
@@ -86,14 +86,14 @@ bool AssetManager::add_font(const std::string& font_name, const std::string& fil
     return inserted;
 }
 
-std::shared_ptr<Font> AssetManager::get_font(const std::string& font_name) {
+Font* AssetManager::get_font(const std::string& font_name) {
     auto font_iter = map_fonts_.find(font_name);
     if (font_iter == map_fonts_.end()) {
         std::cerr << "failed to find: " << font_name << "\n";
         return nullptr;
     }
 
-    return font_iter->second;
+    return font_iter->second.get();
 }
 
 bool AssetManager::add_music(const std::string& music_name, const std::string& filename) {

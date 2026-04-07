@@ -30,7 +30,7 @@ struct TextGlyph {
     glm::vec2 position_{0.F};
     Color color_{255, 255, 255, 255};
     glm::mat4 model_{1.F};
-    std::shared_ptr<Font> pfont_{nullptr};
+    Font* pfont_{nullptr};
 };
 
 class TextBatchRenderer {
@@ -40,7 +40,7 @@ public:
     ~TextBatchRenderer();
     void begin();
     void end();
-    void add_text(std::string_view text, std::shared_ptr<Font>& pfont, const glm::vec2& position,
+    void add_text(std::string_view text, Font* pfont, const glm::vec2& position,
                   const Color& color = Color{255, 255, 255, 255},
                   const glm::mat4& model = glm::mat4{1.F});
     void render();

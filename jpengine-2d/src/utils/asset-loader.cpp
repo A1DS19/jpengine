@@ -18,7 +18,7 @@
 using namespace jpengine;
 using namespace jpengine::utils;
 
-std::shared_ptr<jpengine::Shader> AssetLoader::load_shader_from_memory(const char* vertex_shader,
+std::unique_ptr<jpengine::Shader> AssetLoader::load_shader_from_memory(const char* vertex_shader,
                                                                        const char* frag_shader) {
     const GLuint program = glCreateProgram();
 
@@ -83,10 +83,10 @@ std::shared_ptr<jpengine::Shader> AssetLoader::load_shader_from_memory(const cha
         return nullptr;
     }
 
-    return std::make_shared<jpengine::Shader>(program);
+    return std::make_unique<jpengine::Shader>(program);
 }
 
-std::shared_ptr<jpengine::Texture> AssetLoader::load_texture(std::string_view filename,
+std::unique_ptr<jpengine::Texture> AssetLoader::load_texture(std::string_view filename,
                                                              bool pixel_art) {
     GLuint texture_id{0};
     SDL_Surface* p_surface = IMG_Load(filename.data());
@@ -122,10 +122,10 @@ std::shared_ptr<jpengine::Texture> AssetLoader::load_texture(std::string_view fi
     SDL_FreeSurface(p_formatted_surface);
     SDL_FreeSurface(p_surface);
 
-    return std::make_shared<jpengine::Texture>(texture_id, width, heigth, filename);
+    return std::make_unique<jpengine::Texture>(texture_id, width, heigth, filename);
 }
 
-std::shared_ptr<jpengine::Font> AssetLoader::load_font(std::string_view filename, float font_size) {
+std::unique_ptr<jpengine::Font> AssetLoader::load_font(std::string_view filename, float font_size) {
     int width = 1024;
     int heigth = 1024;
 
@@ -170,7 +170,7 @@ std::shared_ptr<jpengine::Font> AssetLoader::load_font(std::string_view filename
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-    return std::make_shared<jpengine::Font>(id, width, heigth, font_size, (void*)data.release());
+    return std::make_unique<jpengine::Font>(id, width, heigth, font_size, (void*)data.release());
 }
 
 Mix_Music* AssetLoader::load_music(std::string_view filename) {

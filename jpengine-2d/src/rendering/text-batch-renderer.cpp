@@ -8,6 +8,7 @@
 #else
     #include <GLES3/gl3.h>
 #endif
+#include <cassert>
 #include <cstddef>
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float4.hpp>
@@ -42,7 +43,7 @@ void TextBatchRenderer::end() {
     create_batches();
 }
 
-void TextBatchRenderer::add_text(std::string_view text, std::shared_ptr<Font>& pfont,
+void TextBatchRenderer::add_text(std::string_view text, Font* pfont,
                                  const glm::vec2& position, const Color& color,
                                  const glm::mat4& model) {
     text_glyphs_.emplace_back(std::make_unique<TextGlyph>(TextGlyph{.text_ = text.data(),
@@ -105,6 +106,7 @@ void TextBatchRenderer::create_batches() {
     vertices.resize(total * NUM_VERTICES);
 
     for (const auto& text_glyph : text_glyphs_) {
+        assert(text_glyph->pfont_ && "Font must be set for the text batches");
         glm::vec2 temp_pos = text_glyph->position_;
         for (const auto& character : text_glyph->text_) {
             auto glyph = text_glyph->pfont_->get_glyph(character, temp_pos);
