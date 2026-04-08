@@ -1,4 +1,4 @@
-# cpp-lua-wasm-games
+# JPEngine
 
 A collection of games built with **jpengine-2d**, a custom 2D game engine in C++ with Lua scripting and WebAssembly support.
 
@@ -8,7 +8,7 @@ A collection of games built with **jpengine-2d**, a custom 2D game engine in C++
 
 ## Games
 
-| Game | Description |
-|------|-------------|
+| Game                                          | Description      |
+| --------------------------------------------- | ---------------- |
 | [platformer](./jpengine-2d/games/platformer/) | Work in progress |
-| [tetris](./jpengine-2d/games/tetris/) | Work in progress |
+| [tetris](./jpengine-2d/games/tetris/)         | Work in progress |
