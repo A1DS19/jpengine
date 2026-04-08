@@ -100,7 +100,7 @@ void MusicPlayer::create_lua_bind(sol::state& lua, MusicPlayer& music_player,
             }),
         "stop", [&]() { music_player.stop(); }, "pause", [&]() { music_player.pause(); }, "resume",
         [&]() { music_player.resume(); }, "set_volume",
-        [&](int volume) { music_player.set_volume(volume); }, "is_playing",
+        [&](float volume) { music_player.set_volume(volume); }, "is_playing",
         [&]() { return music_player.is_playing(); });
     lua["MusicPlayer"] = &music_player;
 }

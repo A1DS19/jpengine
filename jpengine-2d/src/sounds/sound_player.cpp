@@ -56,6 +56,6 @@ void SoundPlayer::create_lua_bind(sol::state& lua, SoundPlayer& sound_player,
                 sound_player.play(pSoundFx, loops, channel);
             }),
         "stop", [&](int channel) { sound_player.stop(channel); }, "set_volume",
-        [&](int channel, int volume) { sound_player.set_volume(channel, volume); }, "is_playing",
+        [&](float volume, int channel) { sound_player.set_volume(volume, channel); }, "is_playing",
         [&](int channel) { return sound_player.is_playing(channel); });
 }
