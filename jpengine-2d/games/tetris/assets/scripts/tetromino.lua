@@ -167,3 +167,53 @@ function Tetromino:lock_to_grid(grid)
 
 	return true
 end
+
+JTetromino = setmetatable({}, { __index = Tetromino })
+
+function JTetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.JType,
+		num_states = 4,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function JTetromino:init()
+	self.blocks[1] = Block:create({ row = 2, col = 0 })
+	self.blocks[2] = Block:create({ row = 2, col = 1 })
+	self.blocks[3] = Block:create({ row = 1, col = 1 })
+	self.blocks[4] = Block:create({ row = 0, col = 1 })
+
+	self.states[1] = {
+		[1] = Position:create(2, 0),
+		[2] = Position:create(2, 1),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(0, 1),
+	}
+
+	self.states[2] = {
+		[1] = Position:create(0, 0),
+		[2] = Position:create(1, 0),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(1, 2),
+	}
+
+	self.states[3] = {
+		[1] = Position:create(0, 2),
+		[2] = Position:create(0, 1),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(2, 1),
+	}
+
+	self.states[4] = {
+		[1] = Position:create(2, 2),
+		[2] = Position:create(1, 2),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(1, 0),
+	}
+
+	self:init_blocks()
+end

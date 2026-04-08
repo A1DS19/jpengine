@@ -6,7 +6,9 @@ j2d_run_script("assets/scripts/tetromino.lua")
 
 load_assets(asset_defs)
 
-gGrid = Grid:create()
+ggrid = Grid:create()
+gjtet = JTetromino:create()
+gjtet:init()
 
 main = {
 	update = function() end,

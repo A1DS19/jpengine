@@ -1,7 +1,7 @@
 Block = {}
 Block.__index = Block
 
-function Block:Create(params)
+function Block:create(params)
 	local this = {
 		cell_size = params.cell_size or 32,
 		row = params.row or 0,
