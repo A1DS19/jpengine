@@ -106,7 +106,8 @@ bool Game::initialize() {
 bool Game::initialize_registry() {
     pregistry_ = std::make_unique<Registry>();
     auto plua_state = pregistry_->add_to_context<SolStatePtr>(std::make_shared<sol::state>());
-    plua_state->open_libraries(sol::lib::base, sol::lib::package, sol::lib::os, sol::lib::math);
+    plua_state->open_libraries(sol::lib::base, sol::lib::package, sol::lib::os, sol::lib::math,
+                               sol::lib::table, sol::lib::string);
     pregistry_->add_to_context<CameraPtr>(std::make_shared<Camera>(800, 600));
 
     auto pinput_context = std::make_shared<InputContext>();
