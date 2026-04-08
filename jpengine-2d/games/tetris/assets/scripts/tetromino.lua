@@ -217,3 +217,279 @@ function JTetromino:init()
 
 	self:init_blocks()
 end
+
+-- LTetromino
+
+LTetromino = setmetatable({}, { __index = Tetromino })
+
+function LTetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.LType,
+		num_states = 4,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function LTetromino:init()
+	self.blocks[1] = Block:create({ row = 2, col = 2 })
+	self.blocks[2] = Block:create({ row = 2, col = 1 })
+	self.blocks[3] = Block:create({ row = 1, col = 1 })
+	self.blocks[4] = Block:create({ row = 0, col = 1 })
+
+	self.states[1] = {
+		[1] = Position:create(2, 2),
+		[2] = Position:create(2, 1),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(0, 1),
+	}
+	self.states[2] = {
+		[1] = Position:create(2, 0),
+		[2] = Position:create(1, 0),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(1, 2),
+	}
+	self.states[3] = {
+		[1] = Position:create(0, 0),
+		[2] = Position:create(0, 1),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(2, 1),
+	}
+	self.states[4] = {
+		[1] = Position:create(0, 2),
+		[2] = Position:create(1, 2),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(1, 0),
+	}
+
+	self:init_blocks()
+end
+
+-- ITetromino
+
+ITetromino = setmetatable({}, { __index = Tetromino })
+
+function ITetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.IType,
+		num_states = 2,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function ITetromino:init()
+	self.blocks[1] = Block:create({ row = 0, col = 0 })
+	self.blocks[2] = Block:create({ row = 0, col = 1 })
+	self.blocks[3] = Block:create({ row = 0, col = 2 })
+	self.blocks[4] = Block:create({ row = 0, col = 3 })
+
+	self.states[1] = {
+		[1] = Position:create(0, 0),
+		[2] = Position:create(0, 1),
+		[3] = Position:create(0, 2),
+		[4] = Position:create(0, 3),
+	}
+	self.states[2] = {
+		[1] = Position:create(0, 0),
+		[2] = Position:create(1, 0),
+		[3] = Position:create(2, 0),
+		[4] = Position:create(3, 0),
+	}
+
+	self:init_blocks()
+end
+
+-- OTetromino
+
+OTetromino = setmetatable({}, { __index = Tetromino })
+
+function OTetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.OType,
+		num_states = 1,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function OTetromino:init()
+	self.blocks[1] = Block:create({ row = 1, col = 0 })
+	self.blocks[2] = Block:create({ row = 1, col = 1 })
+	self.blocks[3] = Block:create({ row = 2, col = 0 })
+	self.blocks[4] = Block:create({ row = 2, col = 1 })
+
+	self.states[1] = {
+		[1] = Position:create(1, 0),
+		[2] = Position:create(1, 1),
+		[3] = Position:create(2, 0),
+		[4] = Position:create(2, 1),
+	}
+
+	self:init_blocks()
+end
+
+-- STetromino
+
+STetromino = setmetatable({}, { __index = Tetromino })
+
+function STetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.SType,
+		num_states = 2,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function STetromino:init()
+	self.blocks[1] = Block:create({ row = 1, col = 0 })
+	self.blocks[2] = Block:create({ row = 1, col = 1 })
+	self.blocks[3] = Block:create({ row = 2, col = 1 })
+	self.blocks[4] = Block:create({ row = 2, col = 2 })
+
+	self.states[1] = {
+		[1] = Position:create(1, 0),
+		[2] = Position:create(1, 1),
+		[3] = Position:create(2, 1),
+		[4] = Position:create(2, 2),
+	}
+	self.states[2] = {
+		[1] = Position:create(0, 2),
+		[2] = Position:create(1, 2),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(2, 1),
+	}
+
+	self:init_blocks()
+end
+
+-- TTetromino
+
+TTetromino = setmetatable({}, { __index = Tetromino })
+
+function TTetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.TType,
+		num_states = 4,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function TTetromino:init()
+	self.blocks[1] = Block:create({ row = 2, col = 1 })
+	self.blocks[2] = Block:create({ row = 1, col = 0 })
+	self.blocks[3] = Block:create({ row = 1, col = 1 })
+	self.blocks[4] = Block:create({ row = 1, col = 2 })
+
+	self.states[1] = {
+		[1] = Position:create(2, 1),
+		[2] = Position:create(1, 0),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(1, 2),
+	}
+	self.states[2] = {
+		[1] = Position:create(1, 0),
+		[2] = Position:create(0, 1),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(2, 1),
+	}
+	self.states[3] = {
+		[1] = Position:create(0, 1),
+		[2] = Position:create(1, 2),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(1, 0),
+	}
+	self.states[4] = {
+		[1] = Position:create(1, 2),
+		[2] = Position:create(2, 1),
+		[3] = Position:create(1, 1),
+		[4] = Position:create(0, 1),
+	}
+
+	self:init_blocks()
+end
+
+-- ZTetromino
+
+ZTetromino = setmetatable({}, { __index = Tetromino })
+
+function ZTetromino:create()
+	local this = Tetromino.create(self, {
+		etype = ETetrominoType.ZType,
+		num_states = 2,
+	})
+
+	setmetatable(this, self)
+	self.__index = self
+	return this
+end
+
+function ZTetromino:init()
+	self.blocks[1] = Block:create({ row = 1, col = 2 })
+	self.blocks[2] = Block:create({ row = 1, col = 1 })
+	self.blocks[3] = Block:create({ row = 2, col = 1 })
+	self.blocks[4] = Block:create({ row = 2, col = 0 })
+
+	self.states[1] = {
+		[1] = Position:create(1, 2),
+		[2] = Position:create(1, 1),
+		[3] = Position:create(2, 1),
+		[4] = Position:create(2, 0),
+	}
+	self.states[2] = {
+		[1] = Position:create(2, 1),
+		[2] = Position:create(1, 1),
+		[3] = Position:create(1, 0),
+		[4] = Position:create(0, 0),
+	}
+
+	self:init_blocks()
+end
+
+function get_random_tetromino()
+	local val = math.random(7)
+
+	if val == ETetrominoType.LType then
+		local obj = LTetromino:create()
+		obj:init()
+		return obj
+	elseif val == ETetrominoType.JType then
+		local obj = JTetromino:create()
+		obj:init()
+		return obj
+	elseif val == ETetrominoType.IType then
+		local obj = ITetromino:create()
+		obj:init()
+		return obj
+	elseif val == ETetrominoType.OType then
+		local obj = OTetromino:create()
+		obj:init()
+		return obj
+	elseif val == ETetrominoType.SType then
+		local obj = STetromino:create()
+		obj:init()
+		return obj
+	elseif val == ETetrominoType.TType then
+		local obj = TTetromino:create()
+		obj:init()
+		return obj
+	elseif val == ETetrominoType.ZType then
+		local obj = ZTetromino:create()
+		obj:init()
+		return obj
+	end
+
+	print("failed to create tetromino, invalid type")
+end
