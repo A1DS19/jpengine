@@ -19,8 +19,8 @@ function Block:set_position(row_offset, col_offset)
 		print("trying to set position of uninitialized block")
 	end
 
-	local transform = self.entity.get_component(Transform)
-	transform.position = vec2((self.col + col_offset) * self.cell_size, (self.row + col_offset) * self.cell_size)
+	local transform = self.entity:get_component(Transform)
+	transform.position = vec2((self.col + col_offset) * self.cell_size, (self.row + row_offset) * self.cell_size)
 end
 
 function Block:dropdown(row_offset)
@@ -28,7 +28,7 @@ function Block:dropdown(row_offset)
 		print("trying to dropdown of uninitialized block")
 	end
 
-	local transform = self.entity.get_component(Transform)
+	local transform = self.entity:get_component(Transform)
 	transform.position.y = row_offset * self.cell_size
 end
 

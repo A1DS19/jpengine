@@ -5,7 +5,7 @@ function Grid:create(params)
 	params = params or {}
 	local this = {
 		cell_size = params.cell_size or 32,
-		num_rows = params.num_rows or 17,
+		num_rows = params.num_rows or 18,
 		num_cols = params.num_cols or 10,
 		offset = params.offset or vec2(7, 0),
 		position = vec2(0, 0),

@@ -3,7 +3,8 @@ asset_defs = {
 		{ name = "blocks", path = "assets/textures/blocks.png", pixel_art = true },
 	},
 	fonts = {
-		{ name = "pixel", path = "assets/fonts/pixel.ttf", font_size = 32.0 },
+		{ name = "pixel16", path = "assets/fonts/pixel.ttf", font_size = 16.0 },
+		{ name = "pixel32", path = "assets/fonts/pixel.ttf", font_size = 32.0 },
 	},
 	soundfxs = {
 		{ name = "bump", path = "assets/soundfx/bump.wav" },

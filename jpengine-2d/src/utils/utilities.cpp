@@ -10,7 +10,11 @@ using namespace jpengine;
 using namespace jpengine::utils;
 
 float JPEngineUtils::measure_text(const std::string& text, Font& font) {
-    return static_cast<float>(text.size()) * font.get_font_size();
+    glm::vec2 position{0.F};
+    for (const auto& character : text) {
+        font.get_next_char_pos(character, position);
+    }
+    return position.x;
 }
 
 float JPEngineUtils::right_align(const std::string& text, Font& font, const glm::vec2& align_pos) {

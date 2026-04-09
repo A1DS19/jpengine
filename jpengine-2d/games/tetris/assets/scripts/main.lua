@@ -3,11 +3,11 @@ j2d_run_script("assets/scripts/block.lua")
 j2d_run_script("assets/scripts/grid.lua")
 j2d_run_script("assets/scripts/utils.lua")
 j2d_run_script("assets/scripts/tetromino.lua")
+j2d_run_script("assets/scripts/game.lua")
 
 load_assets(asset_defs)
 
-ggrid = Grid:create()
-gtet = get_random_tetromino()
+ggame = Game:create()
 
 main = {
 	update = function() end,
