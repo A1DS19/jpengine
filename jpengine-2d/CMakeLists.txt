@@ -215,6 +215,16 @@ if(VENDOR_SOURCES)
   target_link_libraries(main PRIVATE vendor)
 endif()
 
+# Box2D — nested src layout, must be globbed recursively
+file(GLOB_RECURSE BOX2D_SOURCES ${CMAKE_SOURCE_DIR}/vendor/box2d_2_4_2/src/*.cpp)
+if(BOX2D_SOURCES)
+  add_library(box2d STATIC ${BOX2D_SOURCES})
+  target_include_directories(box2d PUBLIC ${CMAKE_SOURCE_DIR}/vendor/box2d_2_4_2/include)
+  target_include_directories(box2d PRIVATE ${CMAKE_SOURCE_DIR}/vendor/box2d_2_4_2/src)
+  set_target_properties(box2d PROPERTIES COMPILE_FLAGS "-w")
+  target_link_libraries(main PRIVATE box2d)
+endif()
+
 # stb — flat header layout, implementation compiled via stb_impl.cpp
 target_include_directories(main SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/vendor/stb)
 
