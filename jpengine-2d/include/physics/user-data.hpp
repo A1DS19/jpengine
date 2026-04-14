@@ -26,6 +26,9 @@ struct ObjectData {
                bool trigger, const std::uint32_t entity_id = entt::null);
     friend bool operator==(const ObjectData& a, const ObjectData& b);
     [[nodiscard]] std::string to_string() const;
+    [[nodiscard]] const std::vector<const ObjectData*>& get_contact_entities() const noexcept {
+        return contact_entities_;
+    }
 
 private:
     bool add_contact(const ObjectData* object_data);

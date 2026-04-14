@@ -5,6 +5,7 @@
 #include "inputs/keyboard.hpp"
 #include "inputs/mouse.hpp"
 #include "physics/box2d-wrappers.hpp"
+#include "physics/physics-component.hpp"
 #include "rendering/batch-renderer.hpp"
 #include "rendering/camera.hpp"
 #include "rendering/default-shaders.hpp"
@@ -224,6 +225,7 @@ void Game::register_meta_components() {
     Registry::register_meta_component<TransformComponent>();
     Registry::register_meta_component<RigidBodyComponent>();
     Registry::register_meta_component<TextComponent>();
+    Registry::register_meta_component<PhysicsComponent>();
 }
 
 void Game::register_lua_bindings() {
@@ -232,6 +234,7 @@ void Game::register_lua_bindings() {
     auto& passet_manager = pregistry_->get_context<AssetManagerPtr>();
     auto& pinput_context = pregistry_->get_context<InputCtxPtr>();
     auto& paudio_context = pregistry_->get_context<AudioCtxPtr>();
+    auto& pphysics_world = pregistry_->get_context<PhysicsWorld>();
 
     AssetManager::create_lua_bind(*plua_state, *passet_manager);
     Camera::create_lua_bind(*plua_state, *pcamera);
@@ -247,6 +250,7 @@ void Game::register_lua_bindings() {
     MusicPlayer::create_lua_bind(*plua_state, *paudio_context->pmusic_player_, *passet_manager);
     SoundPlayer::create_lua_bind(*plua_state, *paudio_context->psound_player_, *passet_manager);
     utils::JPEngineUtils::create_lua_bind(*plua_state, *passet_manager);
+    PhysicsComponent::create_lua_bind(*plua_state, pphysics_world);
 }
 
 void Game::process_events() {

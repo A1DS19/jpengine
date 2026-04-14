@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#define CORE_DATA() CoreData::get_instance()
+
 namespace jpengine {
 
 class CoreData {
