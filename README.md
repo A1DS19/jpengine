@@ -11,4 +11,10 @@ A collection of games built with **jpengine-2d**, a custom 2D game engine in C++
 | Game                                          | Description      |
 | --------------------------------------------- | ---------------- |
 | [platformer](./jpengine-2d/games/platformer/) | Work in progress |
-| [tetris](./jpengine-2d/games/tetris/)         | Work in progress |
+| [tetris](./jpengine-2d/games/tetris/)         | Classic Tetris with scoring, levels, and increasing speed |
+
+## Screenshots
+
+### Tetris
+
+![Tetris gameplay](./jpengine-2d/games/tetris/assets/screenshots/game-1.png)
