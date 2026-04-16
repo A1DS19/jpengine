@@ -27,7 +27,7 @@ public:
     void add_triangle(const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3,
                       const Color& color);
     void add_circle(const glm::vec2& center, float radius, const Color& color, int segments = 32);
-    void add_polygon(const std::vector<glm::vec2>& center, const Color& color);
+    void add_polygon(const std::vector<glm::vec2>& points, const Color& color);
     void add_line(const glm::vec2& p1, const glm::vec2& p2, const Color& color);
 
     // wireframe shapes
@@ -36,7 +36,7 @@ public:
                            const Color& color);
     void add_wire_circle(const glm::vec2& center, float radius, const Color& color,
                          int segments = 32);
-    void add_wire_polygon(const std::vector<glm::vec2>& center, const Color& color);
+    void add_wire_polygon(const std::vector<glm::vec2>& points, const Color& color);
 
 private:
     void initialize();
