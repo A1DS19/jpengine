@@ -1,12 +1,15 @@
 #include "physics/physics-component.hpp"
 
 #include "physics/box2d-wrappers.hpp"
+#include "physics/boxtrace-callback.hpp"
+#include "physics/raycast-callback.hpp"
 #include "physics/user-data.hpp"
 #include "utils/core-data.hpp"
 
 #include <any>
 #include <box2d/b2_body.h>
 #include <box2d/b2_circle_shape.h>
+#include <box2d/b2_collision.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 #include <cassert>
@@ -109,12 +112,93 @@ bool PhysicsComponent::is_sensor() const noexcept {
 }
 
 ObjectData PhysicsComponent::cast_ray(const b2Vec2& point_1, const b2Vec2& point_2) const noexcept {
+    if (!prigid_body_) {
+        return {};
+    }
+
+    auto* pworld = prigid_body_->GetWorld();
+    if (!pworld) {
+        return {};
+    }
+
+    auto& core_data = CORE_DATA();
+    const float p2m = core_data.pixels_to_meters();
+    const float scaled_half_w = core_data.get_scaled_w() * 0.5F;
+    const float scaled_half_h = core_data.get_scaled_h() * 0.5F;
+
+    auto ax = (point_1.x * p2m) - scaled_half_w;
+    auto ay = (point_1.y * p2m) - scaled_half_h;
+
+    auto bx = (point_2.x * p2m) - scaled_half_w;
+    auto by = (point_2.y * p2m) - scaled_half_h;
+
+    RayCastCallback callback{};
+    pworld->RayCast(&callback, b2Vec2{ax, ay}, b2Vec2{bx, by});
+
+    if (callback.is_hit()) {
+        auto ptr = callback.hit_fixture()->GetUserData().pointer;
+        if (ptr == 0) {
+            return {};
+        }
+        auto* pdata = reinterpret_cast<UserData*>(ptr);
+        try {
+            return std::any_cast<ObjectData>(pdata->user_data_);
+        } catch (const std::bad_any_cast& ex) {
+            std::cerr << "failed to cast to object data from raycast: " << ex.what() << "\n";
+        }
+    }
+
     return {};
 }
 
 std::vector<ObjectData> PhysicsComponent::box_trace(const b2Vec2& lower_bounds,
                                                     const b2Vec2& upper_bounds) const noexcept {
-    return std::vector<ObjectData>({});
+    std::vector<ObjectData> object_data_vec;
+
+    if (!prigid_body_) {
+        return {};
+    }
+
+    auto* pworld = prigid_body_->GetWorld();
+    if (!pworld) {
+        return {};
+    }
+
+    auto& core_data = CORE_DATA();
+    const float p2m = core_data.pixels_to_meters();
+    const float scaled_half_w = core_data.get_scaled_w() * 0.5F;
+    const float scaled_half_h = core_data.get_scaled_h() * 0.5F;
+
+    b2AABB aabb{};
+    aabb.lowerBound =
+        b2Vec2{(lower_bounds.x * p2m) - scaled_half_w, (lower_bounds.y * p2m) - scaled_half_h};
+    aabb.upperBound =
+        b2Vec2{(upper_bounds.x * p2m) - scaled_half_w, (upper_bounds.y * p2m) - scaled_half_h};
+
+    BoxTraceCallback callback{};
+
+    pworld->QueryAABB(&callback, aabb);
+
+    const auto& hit_bodies = callback.get_bodies();
+    if (hit_bodies.empty()) {
+        return object_data_vec;
+    }
+
+    for (const auto* pbody : hit_bodies) {
+        auto ptr = pbody->GetFixtureList()->GetUserData().pointer;
+        if (ptr == 0) {
+            return {};
+        }
+        auto* pdata = reinterpret_cast<UserData*>(ptr);
+        try {
+            auto object_data = std::any_cast<ObjectData>(pdata->user_data_);
+            object_data_vec.emplace_back(object_data);
+        } catch (const std::bad_any_cast& ex) {
+            std::cerr << "failed to cast to object data from boxtrace: " << ex.what() << "\n";
+        }
+    }
+
+    return object_data_vec;
 }
 
 [[nodiscard]] ObjectData PhysicsComponent::get_current_object_data() const noexcept {
