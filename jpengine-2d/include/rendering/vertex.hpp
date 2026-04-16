@@ -25,4 +25,9 @@ struct Vertex {
     static void create_lua_bind(sol::state& lua);
 };
 
+struct ShapeVertex {
+    glm::vec2 position_{0.F};
+    Color color_{.r_ = 255, .g_ = 255, .b_ = 255, .a_ = 255};
+};
+
 } // namespace jpengine
