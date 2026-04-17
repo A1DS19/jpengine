@@ -12,7 +12,7 @@ SoundPlayer.set_volume(0.8, 1)
 local level = {
 	spawn = { x = 60, y = 440 },
 	platforms = {
-		{ x = 0,   y = 568, w = 800, h = 32 },
+		{ x = 0, y = 568, w = 800, h = 32 },
 		{ x = 140, y = 480, w = 120, h = 16 },
 		{ x = 340, y = 400, w = 120, h = 16 },
 		{ x = 540, y = 320, w = 120, h = 16 },
@@ -63,13 +63,27 @@ local function build_level()
 end
 
 local function reset_level()
-	if game.player then game.player.entity:destroy() end
-	for _, p in pairs(game.platforms) do p.entity:destroy() end
-	for _, c in pairs(game.coins) do c.entity:destroy() end
-	if game.goal then game.goal.entity:destroy() end
-	if game.score_text then game.score_text.entity:destroy() end
-	if game.hint_text then game.hint_text.entity:destroy() end
-	if game.status_text then game.status_text.entity:destroy() end
+	if game.player then
+		game.player.entity:destroy()
+	end
+	for _, p in pairs(game.platforms) do
+		p.entity:destroy()
+	end
+	for _, c in pairs(game.coins) do
+		c.entity:destroy()
+	end
+	if game.goal then
+		game.goal.entity:destroy()
+	end
+	if game.score_text then
+		game.score_text.entity:destroy()
+	end
+	if game.hint_text then
+		game.hint_text.entity:destroy()
+	end
+	if game.status_text then
+		game.status_text.entity:destroy()
+	end
 
 	game.score = 0
 	game.won = false
@@ -97,10 +111,7 @@ local function update_player_movement()
 
 	local transform = game.player.entity:get_component(Transform)
 	local pos = transform.position
-	local ground_hit = physics:cast_ray(
-		vec2(pos.x + 16, pos.y + 33),
-		vec2(pos.x + 16, pos.y + 44)
-	)
+	local ground_hit = physics:cast_ray(vec2(pos.x + 16, pos.y + 33), vec2(pos.x + 16, pos.y + 44))
 	local on_ground = ground_hit ~= nil
 
 	if on_ground and (Keyboard.just_pressed(KEY_SPACE) or Keyboard.just_pressed(KEY_W)) then
@@ -110,18 +121,19 @@ local function update_player_movement()
 end
 
 local function handle_pickups()
-	if game.won then return end
+	if game.won then
+		return
+	end
 
 	local physics = game.player.entity:get_component(PhysicsComp)
 	local transform = game.player.entity:get_component(Transform)
 	local pos = transform.position
 
-	local hits = physics:box_trace(
-		vec2(pos.x + 2, pos.y + 2),
-		vec2(pos.x + 30, pos.y + 30)
-	)
+	local hits = physics:box_trace(vec2(pos.x + 2, pos.y + 2), vec2(pos.x + 30, pos.y + 30))
 
-	if not hits then return end
+	if not hits then
+		return
+	end
 
 	for i = 1, #hits do
 		local obj = hits[i]
@@ -178,18 +190,16 @@ local function draw_world()
 end
 
 local function draw_debug()
-	if not game.debug then return end
+	if not game.debug then
+		return
+	end
 
 	local transform = game.player.entity:get_component(Transform)
 	local pos = transform.position
 	local collider = game.player.entity:get_component(CircleCollider)
 	draw_circle(Circle(vec2(pos.x + 16, pos.y + 16), collider.radius, J2D_RED, 24, true))
 
-	draw_line(Line(
-		vec2(pos.x + 16, pos.y + 33),
-		vec2(pos.x + 16, pos.y + 44),
-		J2D_MAGENTA
-	))
+	draw_line(Line(vec2(pos.x + 16, pos.y + 33), vec2(pos.x + 16, pos.y + 44), J2D_MAGENTA))
 
 	for i = 1, #game.platforms do
 		local r = game.platforms[i].rect
@@ -198,7 +208,9 @@ local function draw_debug()
 end
 
 local function check_fell_off()
-	if not game.player then return end
+	if not game.player then
+		return
+	end
 	local pos = game.player.entity:get_component(Transform).position
 	if pos.y > 700 then
 		reset_level()
