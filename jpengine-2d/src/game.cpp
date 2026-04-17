@@ -218,8 +218,12 @@ bool Game::init_sdl() {
     }
 
     pglcontext_ = SDL_GL_CreateContext(pwindow_);
+
+#ifndef __EMSCRIPTEN__
     // enable vsync
     SDL_GL_SetSwapInterval(1);
+#endif
+
     glEnable(GL_BLEND);
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 

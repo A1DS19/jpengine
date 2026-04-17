@@ -21,7 +21,7 @@ auto main() -> int {
     std::cout << "starting game\n";
 
 #ifdef __EMSCRIPTEN__
-    emscripten_set_main_loop(main_loop, 60, 1);
+    emscripten_set_main_loop(main_loop, 0, 1);
 #else
     while (true) {
         main_loop();
