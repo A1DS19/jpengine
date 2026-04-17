@@ -1,6 +1,7 @@
 asset_defs = {
 	textures = {
 		{ name = "characters", path = "assets/textures/characters.png", pixel_art = true },
+		{ name = "tileset1", path = "assets/textures/tilesets/tileset1.png", pixel_art = true },
 	},
 	fonts = {
 		{ name = "pixel", path = "assets/fonts/pixel.ttf", font_size = 32.0 },
