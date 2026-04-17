@@ -548,6 +548,32 @@ void Game::render_shapes() {
     auto pshader = passet_manager->get_shader("shape");
     auto& pshape_container = pregistry_->get_context<ShapeContainer>();
 
+    auto box_view = pregistry_->get_registry().view<TransformComponent, BoxColider>();
+    auto circle_view = pregistry_->get_registry().view<TransformComponent, CircleCollider>();
+
+    for (auto entity : box_view) {
+        const auto& transform = box_view.get<TransformComponent>(entity);
+        const auto& box_collider = box_view.get<BoxColider>(entity);
+
+        pshape_container->push_back(
+            std::make_shared<Rect>(Rect{transform.position_ + box_collider.offset_,
+                                        glm::vec2{box_collider.width_ * transform.scale_.x,
+                                                  box_collider.height_ * transform.scale_.y},
+                                        Color{255, 0, 0, 135}}));
+    }
+
+    for (auto entity : circle_view) {
+        const auto& transform = box_view.get<TransformComponent>(entity);
+        const auto& circle_collider = circle_view.get<CircleCollider>(entity);
+
+        pshape_container->push_back(std::make_shared<Circle>(Circle{
+            glm::vec2{transform.position_.x + (circle_collider.radius_ * transform.scale_.x) +
+                          circle_collider.offset_.x,
+                      transform.position_.y + (circle_collider.radius_ * transform.scale_.y) +
+                          circle_collider.offset_.y},
+            circle_collider.radius_ * transform.scale_.x, Color{255, 0, 0, 135}}));
+    }
+
     if (!pshader) {
         std::cerr << "failed to render shapes, shader does not exist\n";
         return;
