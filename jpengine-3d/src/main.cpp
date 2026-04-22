@@ -108,11 +108,13 @@ int main() {
 
     const std::string fragment_shader_src = R"(
         #version 330 core
+        uniform vec4 u_color;
+
         out vec4 frag_color;
         in vec3 v_color;
 
         void main() {
-            frag_color = vec4(v_color, 1.0);
+            frag_color = vec4(v_color, 1.0) * u_color;
         }
     )";
 
@@ -149,11 +151,14 @@ int main() {
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
+    GLint u_color_location = glGetUniformLocation(shader_program, "u_color");
+
     while (!core::macros::convert_to_bool(glfwWindowShouldClose(pwindow))) {
         glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shader_program);
+        glUniform4f(u_color_location, 0.0F, 1.0F, 0.0F, 1.0F);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT,
                        nullptr);
