@@ -1,5 +1,7 @@
 #include "engine/src/engine.hpp"
 
+#include "engine/src/input/input-manager.hpp"
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -11,6 +13,15 @@ constexpr int WINDOW_WIDTH = 1280;
 constexpr int WINDOW_HEIGHT = 720;
 constexpr const char* WINDOW_TITLE = "jpengine-3d";
 } // namespace
+
+void key_callback(GLFWwindow* window, int key, int, int action, int) {
+    auto& input_manager = engine::Engine::get_instance().get_input_manager();
+    if (action == GLFW_PRESS) {
+        input_manager.set_key_pressed(key, true);
+    } else if (action == GLFW_RELEASE) {
+        input_manager.set_key_pressed(key, false);
+    }
+}
 
 bool Engine::init() {
     if (!papplication_) {
@@ -41,6 +52,7 @@ bool Engine::init() {
         return false;
     }
     glfwMakeContextCurrent(pwindow_);
+    glfwSetKeyCallback(pwindow_, key_callback);
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {

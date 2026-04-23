@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/src/application.hpp"
+#include "engine/engine.hpp"
 
 class Game : public engine::Application {
 public:

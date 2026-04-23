@@ -1,3 +1,4 @@
+#include "engine/engine.hpp"
 #include "engine/src/engine.hpp"
 #include "game.hpp"
 
@@ -5,15 +6,15 @@
 
 int main() {
     Game* game = new Game;
-    engine::Engine engine;
+    auto& eng = engine::Engine::get_instance();
 
-    engine.set_application(game);
+    eng.set_application(game);
 
-    if (engine.init()) {
-        engine.run();
+    if (eng.init()) {
+        eng.run();
     }
 
-    engine.destroy();
+    eng.destroy();
 
     return EXIT_SUCCESS;
 }
