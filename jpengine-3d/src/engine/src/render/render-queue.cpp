@@ -1,6 +1,8 @@
 #include "engine/src/render/render-queue.hpp"
 
 #include "engine/src/graphics/graphics-api.hpp"
+#include "engine/src/graphics/shader-program.hpp"
+#include "engine/src/render/material.hpp"
 
 namespace engine {
 
@@ -11,6 +13,7 @@ void RenderQueue::submit(const RenderCommand& command) {
 void RenderQueue::draw(class GraphicsApi& graphics_api) {
     for (auto& command : commands_) {
         graphics_api.bind_material(command.material_);
+        command.material_->get_shader_program()->set_uniform("u_model", command.model_matrix_);
         graphics_api.bind_mesh(command.mesh_);
         graphics_api.draw_mesh(command.mesh_);
     }

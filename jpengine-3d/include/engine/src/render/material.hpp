@@ -21,6 +21,8 @@ public:
     }
     void bind();
 
+    ShaderProgram* get_shader_program() { return pshader_program_.get(); }
+
 private:
     std::shared_ptr<ShaderProgram> pshader_program_;
     std::unordered_map<std::string, float> float_params_;

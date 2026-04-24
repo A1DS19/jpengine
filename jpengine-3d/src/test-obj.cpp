@@ -14,11 +14,10 @@ TestObject::TestObject() {
     layout(location = 1) in vec3 a_color;
     out vec3 v_color;
 
-    uniform float offset_x;
-    uniform float offset_y;
+    uniform mat4 u_model;
 
     void main() {
-        gl_Position = vec4(a_position.x + offset_x, a_position.y + offset_y, a_position.z, 1.0);
+        gl_Position = u_model * vec4(a_position, 1.0);
         v_color = a_color;
     }
 )";
@@ -70,25 +69,26 @@ void TestObject::update(float deltatime) {
 
     auto& input = engine::Engine::get_instance().get_input_manager();
 
+    auto position = get_position();
     if (input.is_key_pressed(GLFW_KEY_W)) {
-        offset_y += 0.01F;
+        position.y += 0.01F;
     }
     if (input.is_key_pressed(GLFW_KEY_A)) {
-        offset_x -= 0.01F;
+        position.x -= 0.01F;
     }
     if (input.is_key_pressed(GLFW_KEY_S)) {
-        offset_y -= 0.01F;
+        position.y -= 0.01F;
     }
     if (input.is_key_pressed(GLFW_KEY_D)) {
-        offset_x += 0.01F;
+        position.x += 0.01F;
     }
 
-    material_.set_param("offset_x", offset_x);
-    material_.set_param("offset_y", offset_y);
+    set_position(position);
 
     engine::RenderCommand command;
     command.material_ = &material_;
     command.mesh_ = mesh_.get();
+    command.model_matrix_ = get_world_transform();
 
     engine::Engine::get_instance().get_render_queue().submit(command);
 }
