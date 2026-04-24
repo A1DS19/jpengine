@@ -1,12 +1,7 @@
 #pragma once
 
 #include "engine/engine.hpp"
-#include "engine/src/graphics/shader-program.hpp"
-#include "engine/src/render/material.hpp"
-#include "engine/src/render/mesh.hpp"
-#include "engine/src/render/render-queue.hpp"
-
-#include <memory>
+#include "engine/src/scene/scene.hpp"
 
 class Game : public engine::Application {
 public:
@@ -15,9 +10,5 @@ public:
     void destroy() override;
 
 private:
-    std::shared_ptr<engine::ShaderProgram> pshader_program_;
-    engine::Material material_;
-    std::unique_ptr<engine::Mesh> mesh_;
-    float offset_x = 0.0F;
-    float offset_y = 0.0F;
+    engine::Scene scene_;
 };

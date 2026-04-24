@@ -9,5 +9,12 @@
 
 #include "engine/src/application.hpp"             // IWYU pragma: export
 #include "engine/src/engine.hpp"                  // IWYU pragma: export
+#include "engine/src/graphics/graphics-api.hpp"   // IWYU pragma: export
 #include "engine/src/graphics/shader-program.hpp" // IWYU pragma: export
+#include "engine/src/graphics/vertex-layout.hpp"  // IWYU pragma: export
 #include "engine/src/input/input-manager.hpp"     // IWYU pragma: export
+#include "engine/src/render/material.hpp"         // IWYU pragma: export
+#include "engine/src/render/mesh.hpp"             // IWYU pragma: export
+#include "engine/src/render/render-queue.hpp"     // IWYU pragma: export
+#include "engine/src/scene/game-object.hpp"       // IWYU pragma: export
+#include "engine/src/scene/scene.hpp"             // IWYU pragma: export
