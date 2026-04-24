@@ -23,7 +23,12 @@ GLint ShaderProgram::get_uniform_location(const std::string& name) {
 void ShaderProgram::set_uniform(const std::string& name, float value) {
 
     auto location = get_uniform_location(name);
-    glUniform1d(location, value);
+    glUniform1f(location, value);
+}
+
+void ShaderProgram::set_uniform(const std::string& name, float v0, float v1) {
+    auto location = get_uniform_location(name);
+    glUniform2f(location, v0, v1);
 }
 
 } // namespace engine

@@ -13,5 +13,9 @@ void Material::bind() {
     for (auto& param : float_params_) {
         pshader_program_->set_uniform(param.first, param.second);
     }
+
+    for (auto& param : float_2_params_) {
+        pshader_program_->set_uniform(param.first, param.second.first, param.second.second);
+    }
 }
 } // namespace engine

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
 namespace engine {
 
 class ShaderProgram;
@@ -15,11 +16,15 @@ public:
     void set_param(const std::string& name, float param_value) {
         float_params_[name] = param_value;
     }
+    void set_param(const std::string& name, float v0, float v1) {
+        float_2_params_[name] = {v0, v1};
+    }
     void bind();
 
 private:
     std::shared_ptr<ShaderProgram> pshader_program_;
     std::unordered_map<std::string, float> float_params_;
+    std::unordered_map<std::string, std::pair<float, float>> float_2_params_;
 };
 
 } // namespace engine

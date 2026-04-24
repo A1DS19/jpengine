@@ -18,4 +18,6 @@ private:
     std::shared_ptr<engine::ShaderProgram> pshader_program_;
     engine::Material material_;
     std::unique_ptr<engine::Mesh> mesh_;
+    float offset_x = 0.0F;
+    float offset_y = 0.0F;
 };

@@ -19,6 +19,7 @@ public:
     void bind();
     GLint get_uniform_location(const std::string& name);
     void set_uniform(const std::string& name, float value);
+    void set_uniform(const std::string& name, float v0, float v1);
 
 private:
     std::unordered_map<std::string, GLint> uniform_location_cache_;
