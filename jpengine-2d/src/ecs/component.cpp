@@ -106,15 +106,14 @@ void ComponentBinder::create_lua_bind(sol::state& lua) {
 
     lua.new_usertype<TextComponent>(
         "TextComponent", "type_id", &entt::type_hash<TextComponent>::value, sol::call_constructor,
-        sol::factories(
-            []() { return TextComponent{}; },
-            [](std::string_view font, std::string_view text) {
-                return TextComponent{.font_name_ = font.data(), .text_ = text.data()};
-            },
-            [](std::string_view font, std::string_view text, const Color& color) {
-                return TextComponent{
-                    .font_name_ = font.data(), .text_ = text.data(), .color_ = color};
-            }),
+        sol::factories([]() { return TextComponent{}; },
+                       [](std::string_view font, std::string_view text) {
+                           return TextComponent{.font_name_ = font.data(), .text_ = text.data()};
+                       },
+                       [](std::string_view font, std::string_view text, const Color& color) {
+                           return TextComponent{
+                               .font_name_ = font.data(), .text_ = text.data(), .color_ = color};
+                       }),
         "font_name", &TextComponent::font_name_, "text", &TextComponent::text_, "color",
         &TextComponent::color_, "hidden", &TextComponent::hidden_
 

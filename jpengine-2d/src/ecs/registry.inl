@@ -35,7 +35,8 @@ void Registry::register_meta_component() {
     entt::meta_factory<TComponent>()
         .type(entt::type_hash<TComponent>::value())
         .template func<&jpengine::add_component_to_view<TComponent>>("add_component_to_view"_hs)
-        .template func<&jpengine::exclude_component_from_view<TComponent>>("exclude_component_from_view"_hs);
+        .template func<&jpengine::exclude_component_from_view<TComponent>>(
+            "exclude_component_from_view"_hs);
 }
 
 namespace jpengine {

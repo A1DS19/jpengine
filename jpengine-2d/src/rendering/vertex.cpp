@@ -17,11 +17,11 @@ void Vertex::create_lua_bind(sol::state& lua) {
         }),
         "r", &Color::r_, "g", &Color::g_, "b", &Color::b_, "a", &Color::a_);
 
-    lua.set("J2D_WHITE",   Color{255, 255, 255, 255});
-    lua.set("J2D_RED",     Color{255,   0,   0, 255});
-    lua.set("J2D_GREEN",   Color{  0, 255,   0, 255});
-    lua.set("J2D_BLUE",    Color{  0,   0, 255, 255});
-    lua.set("J2D_BLACK",   Color{  0,   0,   0, 255});
-    lua.set("J2D_YELLOW",  Color{255, 255,   0, 255});
-    lua.set("J2D_MAGENTA", Color{255,   0, 255, 255});
+    lua.set("J2D_WHITE", Color{255, 255, 255, 255});
+    lua.set("J2D_RED", Color{255, 0, 0, 255});
+    lua.set("J2D_GREEN", Color{0, 255, 0, 255});
+    lua.set("J2D_BLUE", Color{0, 0, 255, 255});
+    lua.set("J2D_BLACK", Color{0, 0, 0, 255});
+    lua.set("J2D_YELLOW", Color{255, 255, 0, 255});
+    lua.set("J2D_MAGENTA", Color{255, 0, 255, 255});
 }

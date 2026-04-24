@@ -40,8 +40,7 @@ void Registry::create_lua_bind(sol::state& lua, Registry& registry) {
                     callback(Entity{reg, entity});
                 }
             }),
-        "exclude",
-        [&registry](entt::runtime_view& view, const sol::variadic_args& va) {
+        "exclude", [&registry](entt::runtime_view& view, const sol::variadic_args& va) {
             Registry* pRegistry = &registry;
             auto it = va.begin();
 
@@ -52,13 +51,15 @@ void Registry::create_lua_bind(sol::state& lua, Registry& registry) {
 
             for (; it != va.end(); ++it) {
                 sol::object obj = it->as<sol::object>();
-                if (!obj.is<sol::table>()) continue;
+                if (!obj.is<sol::table>())
+                    continue;
 
                 sol::table type = obj.as<sol::table>();
-                if (!type.valid()) continue;
+                if (!type.valid())
+                    continue;
 
-                utils::invoke_meta_function(
-                    utils::get_id_type(type), "exclude_component_from_view"_hs, pRegistry, &view);
+                utils::invoke_meta_function(utils::get_id_type(type),
+                                            "exclude_component_from_view"_hs, pRegistry, &view);
             }
         });
 

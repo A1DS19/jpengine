@@ -9,7 +9,7 @@ bool Game::init() {
     return true;
 }
 
-void Game::update(float deltatime) {
+void Game::update(float) {
     auto& input = engine::Engine::get_instance().get_input_manager();
     if (input.is_key_pressed(GLFW_KEY_A)) {
         std::cout << "key a pressed\n";

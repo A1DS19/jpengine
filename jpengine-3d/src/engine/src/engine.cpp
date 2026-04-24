@@ -14,7 +14,7 @@ constexpr int WINDOW_HEIGHT = 720;
 constexpr const char* WINDOW_TITLE = "jpengine-3d";
 } // namespace
 
-void key_callback(GLFWwindow* window, int key, int, int action, int) {
+void key_callback(GLFWwindow*, int key, int, int action, int) {
     auto& input_manager = engine::Engine::get_instance().get_input_manager();
     if (action == GLFW_PRESS) {
         input_manager.set_key_pressed(key, true);
@@ -63,6 +63,8 @@ bool Engine::init() {
         return false;
     }
 
+    glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+
     return papplication_->init();
 }
 
@@ -71,14 +73,16 @@ void Engine::run() {
         return;
     }
 
-    last_time_point_ = std::chrono::high_resolution_clock::now();
+    last_time_point_ = std::chrono::steady_clock::now();
 
     while (!papplication_->needs_to_be_closed() && !glfwWindowShouldClose(pwindow_)) {
         glfwPollEvents();
 
-        auto now = std::chrono::high_resolution_clock::now();
+        auto now = std::chrono::steady_clock::now();
         float delta_time = std::chrono::duration<float>(now - last_time_point_).count();
         last_time_point_ = now;
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         papplication_->update(delta_time);
 

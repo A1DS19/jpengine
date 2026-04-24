@@ -16,7 +16,7 @@ public:
     [[nodiscard]] bool needs_to_be_closed() const noexcept { return needs_to_be_closed_; };
 
 private:
-    bool needs_to_be_closed_;
+    bool needs_to_be_closed_{false};
 };
 
 } // namespace engine

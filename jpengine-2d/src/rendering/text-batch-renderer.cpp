@@ -43,9 +43,8 @@ void TextBatchRenderer::end() {
     create_batches();
 }
 
-void TextBatchRenderer::add_text(std::string_view text, Font* pfont,
-                                 const glm::vec2& position, const Color& color,
-                                 const glm::mat4& model) {
+void TextBatchRenderer::add_text(std::string_view text, Font* pfont, const glm::vec2& position,
+                                 const Color& color, const glm::mat4& model) {
     text_glyphs_.emplace_back(std::make_unique<TextGlyph>(TextGlyph{.text_ = text.data(),
                                                                     .position_ = position,
                                                                     .color_ = color,
