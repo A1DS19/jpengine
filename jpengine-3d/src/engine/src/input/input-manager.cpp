@@ -19,4 +19,20 @@ bool InputManager::is_key_pressed(int key_code) {
     return keys_[static_cast<std::size_t>(key_code)];
 }
 
+void InputManager::set_mouse_pressed(int button, bool pressed) {
+    if (button < 0 || button >= static_cast<int>(mouse_keys_.size())) {
+        return;
+    }
+
+    mouse_keys_[static_cast<std::size_t>(button)] = pressed;
+}
+
+bool InputManager::is_mouse_button_pressed(int button) {
+    if (button < 0 || button >= static_cast<int>(mouse_keys_.size())) {
+        return false;
+    }
+
+    return mouse_keys_[static_cast<std::size_t>(button)];
+}
+
 } // namespace engine

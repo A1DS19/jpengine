@@ -6,6 +6,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/detail/qualifier.hpp>
 #include <iostream>
 
 namespace engine {
@@ -23,6 +24,22 @@ void key_callback(GLFWwindow*, int key, int, int action, int) {
     } else if (action == GLFW_RELEASE) {
         input_manager.set_key_pressed(key, false);
     }
+}
+
+void mouse_button_callback(GLFWwindow*, int button, int action, int) {
+    auto& input_manager = engine::Engine::get_instance().get_input_manager();
+    if (action == GLFW_PRESS) {
+        input_manager.set_mouse_pressed(button, true);
+    } else if (action == GLFW_RELEASE) {
+        input_manager.set_mouse_pressed(button, false);
+    }
+}
+
+void cursor_position_callback(GLFWwindow* pwindow, double xpos, double ypos) {
+    auto& input_manager = engine::Engine::get_instance().get_input_manager();
+    input_manager.set_mouse_position_old(input_manager.get_mouse_position_current());
+    input_manager.set_mouse_position_current(
+        glm::vec2(static_cast<float>(xpos), static_cast<float>(ypos)));
 }
 
 bool Engine::init() {
@@ -55,6 +72,8 @@ bool Engine::init() {
     }
     glfwMakeContextCurrent(pwindow_);
     glfwSetKeyCallback(pwindow_, key_callback);
+    glfwSetMouseButtonCallback(pwindow_, mouse_button_callback);
+    glfwSetCursorPosCallback(pwindow_, cursor_position_callback);
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
@@ -107,6 +126,7 @@ void Engine::run() {
         render_queue_.draw(graphics_api_, &camera_data);
 
         glfwSwapBuffers(pwindow_);
+        input_manager_.set_mouse_position_old(input_manager_.get_mouse_position_current());
     }
 }
 

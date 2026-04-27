@@ -34,7 +34,7 @@ void GameObject::mark_for_destroy() {
 
     // rotation
     mat = glm::rotate(mat, rotation_.x, glm::vec3(1.0F, 0.0F, 0.0F)); // x axis
-    mat = glm::rotate(mat, rotation_.r, glm::vec3(0.0F, 1.0F, 0.0F)); // y axis
+    mat = glm::rotate(mat, rotation_.y, glm::vec3(0.0F, 1.0F, 0.0F)); // y axis
     mat = glm::rotate(mat, rotation_.z, glm::vec3(0.0F, 0.0F, 1.0F)); // z axis
 
     // scale

@@ -72,9 +72,8 @@ TestObject::TestObject() {
 void TestObject::update(float deltatime) {
 
     engine::GameObject::update(deltatime);
-
+#if 0
     auto& input = engine::Engine::get_instance().get_input_manager();
-
     auto position = get_position();
     if (input.is_key_pressed(GLFW_KEY_W)) {
         position.y += 0.01F;
@@ -90,4 +89,5 @@ void TestObject::update(float deltatime) {
     }
 
     set_position(position);
+#endif
 }
