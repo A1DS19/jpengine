@@ -6,6 +6,7 @@
 #include "engine/src/scene/components/mesh-component.hpp"
 #include "engine/src/scene/game-object.hpp"
 
+#include <glm/gtc/quaternion.hpp>
 #include <memory>
 
 TestObject::TestObject() {
@@ -123,9 +124,10 @@ void TestObject::update(float deltatime) {
     engine::GameObject::update(deltatime);
 
     // Spin the cube so all 6 faces become visible.
-    auto& rotation = get_rotation();
-    rotation.y += deltatime;          // ~1 rad/s around Y
-    rotation.x += deltatime * 0.5F;   // ~0.5 rad/s around X (slight tilt)
+    // Quaternions don't rotate by adding to .x/.y — multiply by a delta-rotation.
+    const auto delta_y = glm::angleAxis(deltatime, glm::vec3(0.0F, 1.0F, 0.0F));
+    const auto delta_x = glm::angleAxis(deltatime * 0.5F, glm::vec3(1.0F, 0.0F, 0.0F));
+    set_rotation(delta_y * delta_x * get_rotation());
 
 #if 0
     auto& input = engine::Engine::get_instance().get_input_manager();

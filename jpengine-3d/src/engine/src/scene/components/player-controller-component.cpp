@@ -4,10 +4,13 @@
 #include "engine/src/engine.hpp"
 #include "engine/src/input/input-manager.hpp"
 
+#include <glm/detail/qualifier.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/quaternion_trigonometric.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/ext/vector_float4.hpp>
+#include <glm/fwd.hpp>
 #include <glm/geometric.hpp>
 #include <glm/matrix.hpp>
 
@@ -24,21 +27,23 @@ void PlayerControllerComponent::update(float deltatime) {
         float delta_y = current_pos.y - old_pos.y;
 
         // rotation around Y axis
-        rotation.y -= delta_x * sensitivity_ * deltatime;
+        float y_angle = -delta_x * sensitivity_ * deltatime;
+        glm::quat y_rot = glm::angleAxis(y_angle, glm::vec3(0.0F, 1.0F, 0.0F));
 
         // rotation around X axis
-        rotation.x -= delta_y * sensitivity_ * deltatime;
+        float x_angle = -delta_y * sensitivity_ * deltatime;
+        glm::vec3 right = rotation * glm::vec3(1.0F, 0.0F, 0.0F);
+
+        glm::quat x_rot = glm::angleAxis(x_angle, right);
+
+        glm::quat delta_rot = y_rot * x_rot;
+        rotation = glm::normalize(delta_rot * rotation);
 
         owner_->set_rotation(rotation);
     }
 
-    glm::mat4 rot_mat(1.0F);
-    rot_mat = glm::rotate(rot_mat, rotation.x, glm::vec3(1.0F, 0.0F, 0.0F)); // x axis
-    rot_mat = glm::rotate(rot_mat, rotation.y, glm::vec3(0.0F, 1.0F, 0.0F)); // y axis
-    rot_mat = glm::rotate(rot_mat, rotation.z, glm::vec3(0.0F, 0.0F, 1.0F)); // z axis
-
-    glm::vec3 front = glm::normalize(glm::vec3(rot_mat * glm::vec4(0.0F, 0.0F, -1.0F, 0.0F)));
-    glm::vec3 right = glm::normalize(glm::vec3(rot_mat * glm::vec4(1.0F, 0.0F, 0.0F, 0.0F)));
+    glm::vec3 front = rotation * glm::vec3(0.0F, 0.0F, -1.0F);
+    glm::vec3 right = rotation * glm::vec3(1.0F, 0.0F, 0.0F);
 
     auto position = owner_->get_position();
 

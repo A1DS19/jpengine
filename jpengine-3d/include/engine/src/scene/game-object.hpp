@@ -1,10 +1,11 @@
 #pragma once
 
 #include "engine/src/scene/component.hpp"
-#include "glm/ext/matrix_float4x4.hpp"
 
 #include <cstddef>
+#include <glm/ext/matrix_float4x4.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <memory>
 #include <string>
 #include <utility>
@@ -25,10 +26,10 @@ public:
     [[nodiscard]] bool get_is_alive() const noexcept { return is_alive_; }
     void mark_for_destroy();
     [[nodiscard]] glm::vec3& get_position() { return position_; }
-    [[nodiscard]] glm::vec3& get_rotation() { return rotation_; }
+    [[nodiscard]] glm::quat& get_rotation() { return rotation_; }
     [[nodiscard]] glm::vec3& get_scale() { return scale_; }
     void set_position(glm::vec3 position) { position_ = position; }
-    void set_rotation(glm::vec3 rotation) { rotation_ = rotation; }
+    void set_rotation(glm::quat rotation) { rotation_ = rotation; }
     void set_scale(glm::vec3 scale) { scale_ = scale; }
     [[nodiscard]] glm::mat4 get_local_transform() const;
     [[nodiscard]] glm::mat4 get_world_transform() const;
@@ -59,7 +60,7 @@ private:
     std::vector<std::unique_ptr<Component>> components_;
     bool is_alive_ = true;
     glm::vec3 position_ = glm::vec3(0.0F);
-    glm::vec3 rotation_ = glm::vec3(0.0F);
+    glm::quat rotation_ = glm::quat(1.0F, 0.0F, 0.0F, 0.0F);
     glm::vec3 scale_ = glm::vec3(1.0F);
 
     friend class Scene;
