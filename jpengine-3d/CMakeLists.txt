@@ -160,6 +160,13 @@ target_link_libraries(main PRIVATE stb)
 find_package(OpenGL REQUIRED)
 target_link_libraries(main PRIVATE OpenGL::GL)
 
+# ---------------------------------------------------------------------------
+# Assets — bake the source path as a compile-time macro so runtime code can
+# load files no matter what working directory the binary was launched from.
+# ---------------------------------------------------------------------------
+set(JPENGINE_ASSETS_DIR "${CMAKE_SOURCE_DIR}/assets")
+target_compile_definitions(main PRIVATE JPENGINE_ASSETS_DIR="${JPENGINE_ASSETS_DIR}")
+
 # Copy compile_commands.json to project root for LSP
 if(EXISTS ${CMAKE_BINARY_DIR}/compile_commands.json)
     add_custom_command(
