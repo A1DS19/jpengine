@@ -86,7 +86,7 @@ std::shared_ptr<Mesh> Mesh::load(const std::string& path) {
         return nullptr;
     }
 
-    auto read_floats = [](const cgltf_accessor* acc, cgltf_size i, float* out, int n) {
+    auto read_floats = [](const cgltf_accessor* acc, cgltf_size i, float* out, cgltf_size n) {
         std::fill(out, out + n, 0.0F);
         return cgltf_accessor_read_float(acc, i, out, n) == 1;
     };
@@ -176,7 +176,7 @@ std::shared_ptr<Mesh> Mesh::load(const std::string& path) {
 
                 if (element.size_ > 0) {
                     element.offset_ = vertex_layout.stride_;
-                    vertex_layout.stride_ += element.size_ * sizeof(float);
+                    vertex_layout.stride_ += element.size_ * static_cast<uint32_t>(sizeof(float));
                     vertex_layout.elements_.push_back(element);
                 }
             }

@@ -19,7 +19,7 @@ public:
     ~Texture();
     [[nodiscard]] TextureHandle get_id() const { return texture_id_; }
 
-    void init(int width, int height, int numchannels, unsigned char* data);
+    void init(int width, int height, unsigned char* data);
     static std::shared_ptr<class Texture> load(const std::string& path);
 
 private:

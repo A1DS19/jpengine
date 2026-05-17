@@ -150,7 +150,8 @@ void parse_gltf_node(cgltf_node* node, GameObject* parent, const std::filesystem
                 continue;
             }
 
-            auto read_floats = [](const cgltf_accessor* acc, cgltf_size i, float* out, int n) {
+            auto read_floats = [](const cgltf_accessor* acc, cgltf_size i, float* out,
+                                  cgltf_size n) {
                 std::fill(out, out + n, 0.0F);
                 return cgltf_accessor_read_float(acc, i, out, n) == 1;
             };
@@ -204,7 +205,7 @@ void parse_gltf_node(cgltf_node* node, GameObject* parent, const std::filesystem
                 }
 
                 element.offset_ = vertex_layout.stride_;
-                vertex_layout.stride_ += element.size_ * sizeof(float);
+                vertex_layout.stride_ += element.size_ * static_cast<uint32_t>(sizeof(float));
                 vertex_layout.elements_.push_back(element);
             }
 
@@ -222,7 +223,7 @@ void parse_gltf_node(cgltf_node* node, GameObject* parent, const std::filesystem
                     }
                     auto idx = (vi * vertex_layout.stride_ + el.offset_) / sizeof(float);
                     float* out = &vertices[idx];
-                    read_floats(accessors[el.index_], vi, out, static_cast<int>(el.size_));
+                    read_floats(accessors[el.index_], vi, out, el.size_);
 
                     // glTF UV origin is top-left; our textures are loaded
                     // bottom-left (stbi flip on load). Flip V to reconcile.

@@ -46,7 +46,7 @@ void ShaderProgram::set_uniform(const std::string& name, glm::vec3 value) {
 
 void ShaderProgram::set_texture(const std::string& name, Texture* texture) {
     auto location = get_uniform_location(name);
-    glActiveTexture(GL_TEXTURE0 + current_texture_unit_);
+    glActiveTexture(GL_TEXTURE0 + static_cast<GLenum>(current_texture_unit_));
     glBindTexture(GL_TEXTURE_2D, texture->get_id());
     glUniform1i(location, current_texture_unit_);
 

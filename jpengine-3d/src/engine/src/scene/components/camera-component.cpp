@@ -11,7 +11,7 @@
 #include <glm/trigonometric.hpp>
 
 namespace engine {
-void CameraComponent::update(float deltatime) {}
+void CameraComponent::update(float /*deltatime*/) {}
 
 [[nodiscard]] glm::mat4 CameraComponent::get_view_matrix() const {
     glm::mat4 mat = glm::mat4(1.0F);

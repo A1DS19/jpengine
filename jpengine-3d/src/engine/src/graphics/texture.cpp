@@ -10,7 +10,7 @@
 namespace engine {
 Texture::Texture(int width, int height, int numchannels, unsigned char* data)
     : width_{width}, height_{height}, numchannels_{numchannels} {
-    init(width, height, numchannels, data);
+    init(width, height, data);
 }
 
 Texture::~Texture() {
@@ -19,7 +19,7 @@ Texture::~Texture() {
     }
 }
 
-void Texture::init(int width, int height, int numchannels, unsigned char* data) {
+void Texture::init(int width, int height, unsigned char* data) {
     glGenTextures(1, &texture_id_);
     glBindTexture(GL_TEXTURE_2D, texture_id_);
     // Force RGBA on load → always upload as RGBA8.

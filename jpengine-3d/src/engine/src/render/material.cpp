@@ -74,8 +74,8 @@ std::shared_ptr<Material> Material::load(const std::string& path) {
         if (params_obj.contains("textures")) {
             for (auto& p : params_obj["textures"]) {
                 std::string name = p.value("name", "");
-                std::string path = p.value("path", "");
-                auto texture = Texture::load(path);
+                std::string texture_path = p.value("path", "");
+                auto texture = Texture::load(texture_path);
                 result->set_param(name, texture);
             }
         }

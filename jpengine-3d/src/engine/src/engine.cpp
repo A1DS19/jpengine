@@ -36,7 +36,7 @@ void mouse_button_callback(GLFWwindow*, int button, int action, int) {
     }
 }
 
-void cursor_position_callback(GLFWwindow* pwindow, double xpos, double ypos) {
+void cursor_position_callback(GLFWwindow*, double xpos, double ypos) {
     auto& input_manager = engine::Engine::get_instance().get_input_manager();
     input_manager.set_mouse_position_old(input_manager.get_mouse_position_current());
     input_manager.set_mouse_position_current(
